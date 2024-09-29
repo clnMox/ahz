@@ -7,6 +7,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     text-align: center;
+    line-height: 1.5;
 }
 
 header {
@@ -20,6 +21,7 @@ nav a {
     color: white;
     text-decoration: none;
     margin: 0 1rem;
+    font-size: 1rem;
 }
 
 nav a:hover {
@@ -29,6 +31,8 @@ nav a:hover {
 .content {
     flex: 1;
     padding: 2rem;
+    width: 80%;
+    margin: 0 auto;
 }
 
 footer {
@@ -51,8 +55,8 @@ footer .social-icons {
 footer a {
     color: white;
     text-decoration: none;
-    font-size: 2rem; 
-    transition: color 4s ease;
+    font-size: 2rem;
+    transition: color 0.4s ease;
 }
 
 footer a:hover {
@@ -62,4 +66,39 @@ footer a:hover {
 footer .copyright {
     margin-top: 1rem;
     font-size: 0.875rem;
+}
+
+/* Media Query for Small Devices */
+@media (max-width: 600px) {
+    nav a {
+        font-size: 0.9rem;
+    }
+
+    .content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    footer a {
+        font-size: 1.5rem;
+    }
+
+    footer {
+        padding: 0.5rem;
+    }
+}
+
+/* Media Query for Tablets and Medium Devices */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .content {
+        width: 90%;
+    }
+
+    nav a {
+        font-size: 1.1rem;
+    }
+
+    footer a {
+        font-size: 1.8rem;
+    }
 }
