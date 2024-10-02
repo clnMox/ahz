@@ -27,10 +27,24 @@ header p {
     font-size: 1.2rem;
 }
 
-.services {
-    margin: 20px auto;
+.service-link {
+    text-decoration: none; /* Remove default underline */
+    color: inherit; /* Inherit the color of the text inside */
+}
+
+.service-link:hover .service {
+    background-color: #f0f0f0; /* Optional hover effect */
+    cursor: pointer;
+}
+
+.service {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    max-width: 1200px;
+    width: 300px;
+    text-align: center;
+    transition: background-color 0.3s ease; /* Smooth hover transition */
 }
 
 .services h2 {
@@ -45,15 +59,6 @@ header p {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-}
-
-.service {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 300px;
-    text-align: center;
 }
 
 .service h3 {
