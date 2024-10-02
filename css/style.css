@@ -1,5 +1,6 @@
 body {
-    background-color: rgb(179, 179, 223);
+    background-color: #081b29;
+    color: rgb(109, 177, 236);
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -8,6 +9,13 @@ body {
     min-height: 100vh;
     text-align: center;
     line-height: 1.5;
+}
+
+.content h3 {
+    color: rgb(219, 153, 250);
+}
+.content p{
+    color: aliceblue;
 }
 
 header {
