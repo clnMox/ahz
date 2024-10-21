@@ -4,91 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" sizes="192x192" href="/icon/sfile-icon-192x192.png" />
-    <link rel="stylesheet" href="css/services.css" />
+    <link rel="stylesheet" href="css/saf.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <title>Safaricom Files</title>
   </head>  
-    <style>
-      /* Basic styling for body */
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        padding: 20px;
-      }
-
-      /* Slider container */
-      .slider {
-        display: flex;
-        overflow-x: auto;
-        scroll-behavior: smooth;
-      }
-
-      /* Individual card styling */
-      .card {
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        margin: 10px;
-        padding: 20px;
-        min-width: 300px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s;
-      }
-
-      /* Hover effect for cards */
-      .card:hover {
-        transform: scale(1.05);
-      }
-
-      /* Content alignment */
-      .card h1 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-      }
-
-      .card p {
-        font-size: 1rem;
-        margin: 5px 0;
-      }
-
-      /* Download button styling */
-      .card button {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 1rem;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-      }
-
-      .card button:hover {
-        background-color: #218838;
-      }
-
-      /* Slider navigation buttons */
-      .slider-nav {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-        border-radius: 50%;
-      }
-
-      .prev {
-        left: 10px;
-      }
-
-      .next {
-        right: 10px;
-      }
-    </style>
-
     <script>
       function displayDate() {
         const uploadedDate = new Date("2024-10-19"); // Set the uploaded date here
@@ -119,36 +38,32 @@
       }
     </script>
   </head>
-  <h1>Download Our Files</h1>
-
+  <h1>Get all downloadable Files in a click</h1>
   <p>
-    You can download the latest Ha Tunnel Plus configuration from
-    <span
-      ><a
-        href="https://drive.google.com/file/d/16l2Fs5VSNeV0iDSrT9EUTfWNHiqBjmCd/view?usp=drivesdk"
-        download
-        >this link</a
-      ></span
-    >.
+    You can download the latest Ha Tunnel Plus application from
+    <span><a
+        href="https://play.google.com/store/apps/details?id=com.hatunnel.plus" target="_blank">Google PlayStore</a>
+        </span
+    >
   </p>
 
   <p>
-    If you prefer Http Injector, download the configuration from
-    <span><a href="https://example.com/file2.zip" download>this link</a></span
-    >.
+    If you prefer Http Injector, download the app from
+    <span><a href="https://play.google.com/store/apps/details?id=com.evozi.injector" target="_blank">Google PlayStore</a></span>
   </p>
 
   <p>
-    We also have a file for Http Custom. You can get it from
-    <span><a href="https://example.com/file3.docx" download>here</a></span
-    >.
+    We also have Http Custom. You can get it here
+    <span><a href="https://play.google.com/store/apps/details?id=xyz.easypro.httpcustom" target="_blank">Google PlayStore
+    </a></span
+    >
   </p>
   <body>
     <!-- Slider container -->
     <div class="slider">
       <!-- First card -->
       <div class="card">
-        <h1><img src="images/logo.png" alt="URL Icon" style="width: 20px; height: 20px;"> http CUSTOM url images\hc.png</h1>
+        <h1><img src="images/hc.png" alt="URL Icon">http CUSTOM</h1>
         <p><strong>File type:</strong> application/zip</p>
         <p><strong>BLANC ID:</strong> Other</p>
         <p>
@@ -165,7 +80,7 @@
 
       <!-- Second card -->
       <div class="card">
-        <h1>http CUSTOM url images\hc.png</h1>
+        <h1><img src="images/ehi.png" alt="URL Icon">http INJECTOR</h1>
         <p><strong>File type:</strong> application/zip</p>
         <p><strong>BLANC ID:</strong> Other</p>
         <p>
@@ -182,7 +97,7 @@
 
       <!-- Third card -->
       <div class="card">
-        <h1>Ha TUNNEL CONFIG</h1>
+        <h1><img src="images/hat.png" alt="URL Icon">Ha TUNNEL</h1>
         <p><strong>File type:</strong> application/.hat</p>
         <p><strong>BLANC ID:</strong> Other</p>
         <p>
@@ -192,7 +107,7 @@
           <strong>Date Modified:</strong> <span id="modified-date-3"></span>
         </p>
         <p><strong>Downloads:</strong> 485</p>
-        <a href="path/to/your/file.zip" download>
+        <a href="https://drive.google.com/file/d/16l2Fs5VSNeV0iDSrT9EUTfWNHiqBjmCd/view?usp=drivesdk" download>
           <button>Download hat file</button>
         </a>
       </div>
