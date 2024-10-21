@@ -1,0 +1,51 @@
+/* Accordion card style */
+.card {
+    border: 1px solid #15ff00;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Header style for the collapsed section */
+.card-header {
+    background-color: #f7f7f7;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+/* Header hover effect */
+.card-header:hover {
+    background-color: #e0e0e0;
+}
+
+/* Collapsed state style */
+.card-header.collapsed {
+    background-color: #f7f7f7;
+}
+
+/* Style for the title inside the header */
+.card-title {
+    color: #0f8a3e;
+    text-decoration: none;
+}
+
+/* Body section styling */
+.card-body {
+    padding: 15px;
+    font-size: 14px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+}
+
+/* Optional: Different background for the active collapse section */
+.collapse.show .card-header {
+    background-color: #9cbb11;
+    color: white;
+}
+
+.collapse.show .card-title {
+    color: white;
+}
