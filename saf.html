@@ -19,6 +19,39 @@
     />
     <link rel="stylesheet" href="css/saf.css" />
     <title>Safaricom Files</title>
+    <style>
+      .navbar {
+        background-color: rgb(37, 65, 65);
+        font-size: 20px;
+        font-family: "Trebuchet MS";
+        padding-right: 15px;
+        padding-left: 15px;
+      }
+      .navdiv {
+        display: flex;
+        text-align: justify;
+        justify-content: space-between;
+      }
+      .logo {
+        width: 100px;
+        height: auto;
+      }
+      .logo img {
+        max-width: 40px;
+        height: auto;
+        border-radius: 40px;
+      }
+
+      li {
+        list-style: none;
+        display: inline-block;
+      }
+      li a {
+        color: #b8bef1;
+        font-weight: bold;
+        margin-right: 25px;
+      }
+    </style>
     <script>
       function displayDate() {
         const uploadedDate = new Date("2024-10-19");
@@ -41,6 +74,18 @@
     </script>
   </head>
   <body>
+    <nav class="navbar">
+      <div class="navdiv">
+        <div class="logo">
+          <a href="#"><img src="images/mox.jpg" alt="logo" /></a>
+        </div>
+        <ul>
+          <li><a href="home.html">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
     <header>
       <h1>Get all downloadable Files in a click</h1>
       <p class="download">
@@ -89,7 +134,7 @@
           <strong>Date Modified:</strong> <span id="modified-date-1"></span>
         </p>
         <p><strong>Downloads:</strong> 485</p>
-        <a href="path/to/your/file.zip" download>
+        <a href="media/psiphon.hc" download>
           <button>Download</button>
         </a>
       </div>
@@ -108,7 +153,7 @@
           <strong>Date Modified:</strong> <span id="modified-date-2"></span>
         </p>
         <p><strong>Downloads:</strong> 485</p>
-        <a href="path/to/your/file.zip" download>
+        <a href="media/activator.ehi" download>
           <button>Download</button>
         </a>
       </div>
@@ -125,13 +170,59 @@
           <strong>Date Modified:</strong> <span id="modified-date-3"></span>
         </p>
         <p><strong>Downloads:</strong> 485</p>
-        <a
-          href="media/hatunnel0.hat"
-          download
-        >
+        <a href="media/hatunnel0.hat" download>
           <button>Download hat file</button>
         </a>
       </div>
+    </div>
+
+    <div class="container">
+      <article>
+        <h2>How to Find a Working IP Address</h2>
+        <p>
+          You need a specific IP address in the format 10.2x and 101.x where x
+          is any number between 0 and 9...
+        </p>
+        <span class="more-content"
+          >This format is often used for testing environments
+          <div class="code-container">
+            <button class="copy-btn" onclick="copyToClipboard(this)">
+              Copy
+            </button>
+            <code>rapiddns --ip 8.8.8.8/24</code>
+          </div>
+          or internal network configurations. For external use, the format may
+          differ based on your internet service provider (ISP) or network
+          setup.</span
+        >
+        <span class="read-more" onclick="toggleText(this)">Read More</span>
+      </article>
+
+      <article>
+        <h2>How to Style with CSS</h2>
+        <p>CSS is a language that describes the style of an HTML document...</p>
+        <span class="more-content"
+          >You can control colors, layout, fonts, and more using CSS. It's a key
+          part of web design, helping to make web pages look appealing and
+          accessible across devices.</span
+        >
+        <span class="read-more" onclick="toggleText(this)">Read More</span>
+      </article>
+
+      <article>
+        <h2>Introduction to HTML</h2>
+        <p>
+          HTML is the foundation of web development. It structures the
+          content...
+        </p>
+        <span class="more-content"
+          >HTML is responsible for organizing content like text, images, and
+          links on a webpage. Each element is represented by a tag, such as
+          <code>&lt;p&gt;</code> for paragraphs or <code>&lt;h1&gt;</code> for
+          headings.</span
+        >
+        <span class="read-more" onclick="toggleText(this)">Read More</span>
+      </article>
     </div>
 
     <div class="container mt-4">
@@ -183,6 +274,41 @@
         </div>
       </div>
     </div>
+
+    <script>
+      function toggleText(element) {
+        var moreContent = element.previousElementSibling;
+        if (
+          moreContent.style.display === "none" ||
+          moreContent.style.display === ""
+        ) {
+          moreContent.style.display = "inline";
+          element.textContent = "Read Less";
+        } else {
+          moreContent.style.display = "none";
+          element.textContent = "Read More";
+        }
+      }
+
+      function copyToClipboard(button) {
+        const code = button.nextElementSibling.textContent; // Use nextElementSibling to select the code
+        navigator.clipboard
+          .writeText(code)
+          .then(() => {
+            button.textContent = "✅ Copied"; // Change the button text to "Copied"
+            button.style.backgroundColor = "#28a745"; // Change color to green when copied
+
+            // Reset button text back to "Copy" after 2 seconds
+            setTimeout(() => {
+              button.textContent = "Copy";
+              button.style.backgroundColor = "#007bff"; // Revert back to original color
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Failed to copy: ", err);
+          });
+      }
+    </script>
 
     <!-- Navigation buttons -->
     <button class="slider-nav prev" onclick="slide(-1)">&#10094;</button>
