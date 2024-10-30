@@ -3,132 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="icon"
-      href="/images/download.jpeg"
-      type="image/png"
-      sizes="192x192"
-    />
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+    <link rel="icon" href="/images/download.jpeg" type="image/png" sizes="192x192"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="css/saf.css" />
+    
     <title>Safaricom Files</title>
-    <style>
-      .navbar {
-        background-color: rgb(37, 65, 65);
-        font-size: 20px;
-        font-family: "Trebuchet MS";
-        padding-right: 15px;
-        padding-left: 15px;
-      }
-      .navdiv {
-        display: flex;
-        text-align: justify;
-        justify-content: space-between;
-      }
-      .logo {
-        width: 100px;
-        height: auto;
-      }
-      .logo img {
-        max-width: 40px;
-        height: auto;
-        border-radius: 40px;
-      }
-
-      li {
-        list-style: none;
-        display: inline-block;
-      }
-      li a {
-        color: #b8bef1;
-        font-weight: bold;
-        margin-right: 25px;
-      }
-      header {
-        background-color: #00012e;
-        color: white;
-        padding: 10px 0;
-        text-align: center;
-      }
-      nav {
-        background-color: #062006;
-        padding: 10px;
-        text-align: center;
-      }
-      nav a {
-        color: white;
-        margin: 0 15px;
-        text-decoration: none;
-      }
-      .container {
-        padding: 20px;
-        color: #000;
-      }
-      article {
-        background-color: rgb(224, 218, 210);
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      article p a {
-        color: #4d01ff;
-      }
-      footer {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 10px 0;
-        position: relative;
-        width: 100%;
-      }
-      .more-content {
-        display: none;
-        margin-top: 10px;
-      }
-      .read-more {
-        color: blue;
-        cursor: pointer;
-        text-decoration: underline;
-      }
-      .code-container {
-        position: relative;
-        background-color: #ffffff;
-        border: 1px solid #070707;
-        border-radius: 5px;
-        padding: 1px;
-        margin: 2px 0;
-        font-family: monospace;
-        font-size: 16px;
-        overflow: auto;
-      }
-      .copy-btn {
-        position: absolute;
-        top: 1px;
-        right: 3px;
-        background-color: #007bff;
-        color: rgb(255, 255, 255);
-        border: none;
-        padding: 2px 5px;
-        cursor: pointer;
-        border-radius: 1px;
-        font-size: 14px;
-      }
-      .copy-btn:hover {
-        background-color: #0056b3;
-      }
-      .code-container code {
-        white-space: pre-wrap;
-      }
-    </style>
     <script>
       function displayDate() {
         const uploadedDate = new Date("2024-10-19");
@@ -151,17 +31,20 @@
     </script>
   </head>
   <body>
-    <nav class="navbar">
-      <div class="navdiv">
-        <div class="logo">
-          <a href="#"><img src="images/mox.jpg" alt="logo" /></a>
-        </div>
-        <ul>
-          <li><a href="home.html">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
+    <nav>
+      <ul class="sidebar">
+        <li onclick=hideSidebar()><a href="#"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/macos-close.png" alt="macos-close"/></a></li>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Login</a></li>
+      </ul>
+      <ul>
+        <li><a href="#"><img src="images/mox.jpg" alt="logo"></a></li>
+        <li class="hideOnMobile"><a href="#">Home</a></li>
+        <li class="hideOnMobile"><a href="#">About</a></li>
+        <li class="hideOnMobile"><a href="#">Login</a></li>
+        <li class="menu-button" onclick=showSidebar()><a href="#"><img width="26" height="26" src="https://img.icons8.com/fluency/100/menu--v2.png" alt="menu--v2"/></a></li>
+      </ul>
     </nav>
     <header>
       <h1>Get all downloadable Files in a click</h1>
@@ -369,6 +252,17 @@
         </div>
       </div>
     </div>
+
+    <script>
+      function showSidebar(){
+        const sidebar = document.querySelector('.sidebar')
+        sidebar.style.display = 'flex'
+      }
+      function hideSidebar(){
+        const sidebar = document.querySelector('.sidebar')
+        sidebar.style.display = 'none'
+      }
+    </script>
 
     <script>
       function toggleText(element) {
