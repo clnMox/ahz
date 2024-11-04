@@ -1,112 +1,212 @@
 body {
-    background-color: #081b29;
-    color: rgb(109, 177, 236);
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    text-align: center;
-    line-height: 1.5;
+  background-color: #081b29;
+  color: rgb(109, 177, 236);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  text-align: center;
+  line-height: 1.5;
 }
 
 .content h3 {
-    color: rgb(219, 153, 250);
+  color: rgb(219, 153, 250);
 }
-.content p{
-    color: aliceblue;
+.content p {
+  color: aliceblue;
 }
 
 header {
-    background-color: #333;
-    color: white;
-    padding: 1rem;
-    text-align: center;
+  color: white;
+  padding: 1rem;
+  justify-content: space-between;
+}
+
+nav {
+  background-color: #005358;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+nav li {
+  height: 50px;
+}
+
+nav ul {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+nav li {
+  padding: 0 20px;
 }
 
 nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 1rem;
-    font-size: 1rem;
+  height: 100%;
+  text-decoration: none;
+  display: flex;
+  color: #ffffff;
+  align-items: center;
+  justify-content: center;
+}
+
+nav ul li img {
+  width: 50px; /* Set logo width */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 50%; /* Makes the logo a circle */
 }
 
 nav a:hover {
-    text-decoration: underline;
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #040125;
+  border-radius: 10px;
 }
 
+nav li:first-child {
+  margin-right: auto;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 40vh;
+  width: 250px;
+  z-index: 999;
+  background-color: transparent;
+  backdrop-filter: blur(10px);
+  box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.sidebar li {
+  width: 100%;
+}
+
+.sidebar a {
+  width: 100%;
+}
+
+.sidebar a:hover {
+  width: 100%;
+  background-color: #005358;
+}
+
+.sidebar li img {
+  width: 30px;
+  height: 30px;
+  color: #ffffff;
+  transition: transform 0.2s;
+}
+
+.sidebar li:hover img {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
 .content {
-    flex: 1;
-    padding: 2rem;
-    width: 80%;
-    margin: 0 auto;
+  flex: 1;
+  padding: 2rem;
+  width: 80%;
+  margin: 0 auto;
 }
 
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    display: flex;
+/* Base styles */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 30;
+}
+
+.footer .container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footer-column {
+  flex: 1;
+  margin: 10px;
+  text-align: left;
+}
+
+.footer-column h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.footer-column p,
+.footer-column ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.footer-column ul li {
+  margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-column .social-icons svg {
+  margin-right: 10px;
+  color: #ffc5c5;
+}
+
+.footer-column .social-icons a:hover {
+  color: #60fdfd;
+}
+
+.footer-bottom {
+  align-self: center;
+  margin-top: 2px;
+  color: #e6cadb;
+}
+
+.footer-bottom a {
+  color: #eeacac;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .footer-top {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+  }
 
-footer .social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
-footer a {
-    color: white;
-    text-decoration: none;
-    font-size: 2rem;
-    transition: color 0.4s ease;
-}
-
-footer a:hover {
-    color: aqua;
-}
-
-footer .copyright {
-    margin-top: 1rem;
-    font-size: 0.875rem;
-}
-
-/* Media Query for Small Devices */
-@media (max-width: 600px) {
-    nav a {
-        font-size: 0.9rem;
-    }
-
-    .content {
-        width: 95%;
-        padding: 1rem;
-    }
-
-    footer a {
-        font-size: 1.5rem;
-    }
-
-    footer {
-        padding: 0.5rem;
-    }
+  .footer-column {
+    margin: 10px 0;
+    font-size: 1em;
+    padding: 20px;
+  }
 }
 
 /* Media Query for Tablets and Medium Devices */
 @media (min-width: 601px) and (max-width: 1024px) {
-    .content {
-        width: 90%;
-    }
+  .content {
+    width: 90%;
+  }
 
-    nav a {
-        font-size: 1.1rem;
-    }
+  nav a {
+    font-size: 1.1rem;
+  }
 
-    footer a {
-        font-size: 1.8rem;
-    }
+  footer a {
+    font-size: 1.1rem;
+  }
 }
