@@ -27,20 +27,30 @@
       const slider = document.querySelector(".slider");
       slider.scrollLeft += direction * 320; // Adjust based on card width
     }
-
-    // Toggle Read More functionality
-    function toggleText(button) {
-      const moreContent = button.previousElementSibling;
-      moreContent.style.display = 
-        moreContent.style.display === "inline" ? "none" : "inline";
-      button.textContent = 
-        moreContent.style.display === "inline" ? "Read Less" : "Read More";
-    }
     // Toggle Collapsible Functionality
     function toggleCollapse(sectionId) {
       const section = document.getElementById(sectionId);
       section.style.display = section.style.display === "block" ? "none" : "block";
     }
+
+    // Toggle Read More functionality
+    function toggleText(button) {
+      // Get the related elements based on the button clicked
+      const moreContent = button.previousElementSibling;  // This gets the .more-content element
+      const videoSection = button.closest('article').querySelector('.video-section');  // Get the video section in the same article
+    
+      // Check current visibility and toggle accordingly
+      if (moreContent.style.display === "none" || moreContent.style.display === "") {
+        moreContent.style.display = "inline"; // Show the hidden text
+        button.textContent = "Read Less"; // Update button text
+        videoSection.style.display = "flex"; // Show the video section
+      } else {
+        moreContent.style.display = "none"; // Hide the hidden text
+        button.textContent = "Read More"; // Update button text
+        videoSection.style.display = "none"; // Hide the video section
+      }
+    }
+
   </script>
   </head>
   <body>
@@ -110,7 +120,7 @@
         <a href="media/psiphon.hc" download>
           <button>Download .hc psiphon file</button>
         </a>
-        <a href="media/allIP.hc" download>
+        <a href="media/HCroodito.hc.hc" download>
           <button>Download .hc roodito unlimited file</button>
         </a>
         <a href="media/allIP.hc" download>
@@ -134,9 +144,6 @@
         <p><strong>Downloads:</strong> 54</p>
         <a href="media/activator.ehi" download>
           <button>Download .ehi activator file</button>
-        </a>
-        <a href="media/activator.ehi" download>
-          <button>Download .ehi roodito file</button>
         </a>
         <a href="media/allip.ehi" download>
           <button>Download .ehi all ip file</button>
@@ -163,42 +170,91 @@
 
     <div class="container">
       <article>
-        <h2>How to FULL Setup explained.</h2>
         <h2>HOW TO CONNECT SAFARICOM UNLIMITED <br>DON'T SKIP ANY OF THIS STEPS🔥</h2>
-
-        <p>
-          After downloading
-          <a
-            href="https://play.google.com/store/apps/details?id=xyz.easypro.httpcustom"
-            target="_blank"
-            >http CUSTOM </a
-          >, <a href="">http INJECTOR</a> & <a href="https://play.google.com/store/apps/details?id=com.evozi.injector" target="_blank"><a href="https://play.google.com/store/apps/details?id=com.hatunnel.plus" target="_blank">ha TUNNEL plus</a> applications from <a href="https://play.google.com/store/apps/">google PLAYSTORE</a>, for first timers, you need to setup...
+        <p>After downloading 
+          <a href="https://play.google.com/store/apps/details?id=xyz.easypro.httpcustom" target="_blank">http CUSTOM </a>, 
+          <a href="https://play.google.com/store/apps/details?id=com.evozi.injector" target="_blank">http INJECTOR </a>& 
+          <a href="https://play.google.com/store/apps/details?id=com.hatunnel.plus" target="_blank">ha TUNNEL plus</a> 
+          applications from <a href="https://play.google.com/store/apps/">google PLAYSTORE</a>, 
+          for first timers, you need to setup...
         </p>
-        <span class="more-content"
-          >your HTTP Custom as the default assistant app to help you search for the ip addresses automatically. <br> Under your phone settings, search for default digital assistance app and select http custom instead of the default Google. <br> Alternatively, open http custom and on top left click on the 3 bars then scroll down till you see mobile ip Hunter. <br> Tap on search and it will navigate you directly to the digital assistant where you can select HC as the default one. If all these fail you'll have to manually hunt for the ip addresses by toggling on and off flight mode and checking if the correct ip address has been found via the LOG tab as seen when you swipe to the left. <br>After successifully setting up hc as the default assistant app, download http custom psiphon file and activator file. <br>The files are saved by default to the download folder in your device.</span
-        >
-        <span class="read-more" onclick="toggleText(this)">Read More</span>
+        <span class="more-content" style="display: none;">
+          your HTTP Custom as the default assistant app to help you search for the ip addresses automatically. <br> 
+          Under your phone settings, search for default digital assistance app and select http custom instead of the default Google. <br> 
+          Alternatively, open http custom and on top left click on the 3 bars then scroll down till you see mobile ip Hunter. <br> 
+          Tap on search and it will navigate you directly to the digital assistant where you can select HC as the default one. 
+          If all these fail you'll have to manually hunt for the ip addresses by toggling on and off flight mode and 
+          checking if the correct ip address has been found via the LOG tab as seen when you swipe to the left. <br>
+          After successifully setting up hc as the default assistant app, download http custom psiphon file and activator file. <br>
+          The files are saved by default to the download folder in your device.</span>
+        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
+        
+        <!-- Video Section -->
+        <div class="video-section" style="display: none;">
+          <!-- Video 1 -->
+          <div class="video-container">
+            <div class="video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/VIDEO_ID_1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="video-description">
+              Description for Video 1: This video explains the process of finding a working IP address in detail.
+            </div>
+          </div>
+        </div>
       </article>
+    
       <article>
         <h2>How to  import a file</h2>
-        <p>
-          Importing is the process of loading a file into your vpn application. Importing a file...
-        </p>
-        <span class="more-content"
-          >consistes of clicking a file say activator.ehi or psiphon.hc then an open with pop up menu appears asking you to choose an app to open with. <br>If you're loading a .hc then choose http custom. if its a .ehi choose http injector. if its .ha select ha tunnel plus. <br>Alternatively via in app, on http custom click on the + at the bottom right and select open config. since our config has been saved into the download folder, navigate to your download folder and you'll find it there then tap on it to load automatically. <br>For injector, click on the file icon in between setting icon and three dots then choose import config, select internal storage the navigate to downloads folder. tap on activator.ehi and it will be loaded automatically. <br>For ha tunnel click on the 3 dots, then you'll see import/export. import configure then it will take you to your internal storage. search for ha tunnel.hat and tap on it to import. <br> Alternatively search for the files using their extensions to quickly index them out,  that is .ehi .ha or .hc <br>
-            
-      </span
-        >
-        <span class="read-more" onclick="toggleText(this)">Read More</span>
+        <p>Importing is the process of loading a file into your vpn application. Importing a file...</p>
+        <span class="more-content" style="display: none;">
+          consistes of clicking a file say activator.ehi or psiphon.hc then an open with pop up menu appears 
+          asking you to choose an app to open with. <br>
+          If you're loading a .hc then choose http custom. if its a .ehi choose http injector. if its .ha select ha tunnel plus. <br>
+          Alternatively via in app, on http custom click on the + at the bottom right and select open config. 
+          Since our config has been saved into the download folder, 
+          navigate to your download folder and you'll find it there then tap on it to load automatically. <br>
+          For injector, click on the file icon in between setting icon and three dots then choose import config, 
+          select internal storage the navigate to downloads folder. tap on activator.ehi and it will be loaded automatically. <br>
+          For ha tunnel click on the 3 dots, then you'll see import/export. import configure then it will take you to your internal storage. 
+          search for ha tunnel.hat and tap on it to import. <br> 
+          Alternatively search for the files using their extensions to quickly index them out,  that is .ehi .ha or .hc</span>
+        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
+        
+        <!-- Video Section -->
+        <div class="video-section" style="display: none;">
+          <!-- Video 1 -->
+          <div class="video-container">
+            <div class="video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/VIDEO_ID_1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="video-description">
+              Description for Video 1: This video explains the process of finding a working IP address in detail.
+            </div>
+          </div>
+        </div>
       </article>
+    
+
       <article>
         <h2>How to Find a Working IP Address</h2>
         <p>
           You need a specific IP address in the format 10.2x and 101.x where x
           is any number between 0 and 9...
         </p>
-        <span class="more-content"
-          >These ips are essential to get you connected. 
+        <span class="more-content" style="display: none;">
+          These ips are essential to get you connected.
           <div class="code-container">
             <button class="copy-btn" onclick="copyToClipboard(this)">
               Copy
@@ -206,9 +262,42 @@
             <code
               >10.208;10.209;10.210;10.211;10.212;10.213;10.214;10.215;10.216;10.217;10.218;10.219;10.22010.222;10.236;10.237;10.239;10.244;10.245;10.246;10.247;10.248;10.249;10.60;10.61;10.62;10.63;10.221;10.222;10.228</code>
           </div>
-          These ips might be updated periodically if they happen to change over time so keep an eye though the default ones are in the format 10.2xx and 10.6x<br> on top left (http custom) click on the 3 bars then scroll down till you see mobile ip Hunter. Paste your copied ip addresses below the IP (ex.10...100) then tap on search <br> When you successifully find an ip address its time to connect. Firstly, (Step 1) we begin with psiphon file for http custom that is capped at 18mbs. You can download something greater than 18mbs so that we quickly deplete those 18 mbs. (mbs range from 14-18). When depleted the http custom icon at the top changes to a cloud and when you check the logs its stuck on connecting. <br>Our procedure of depleting psiphon's estimated 18mbs is now our Step 1 <br> Now we move to step 2  <br>Open http injector and click on start assuming you've imported the activator file. Again look for something to download or a way to consume those 45 mbs till they are exhausted. When successfully connected with the right ip, a 200 OK connection established message appears as part of the logs, else a 302 temporary moved message appears to show you that your IP address is bad. <br>Due to the nature of activator  internally closing the connection by itself, occasionally stop and start the connection if you get stuck at downloading or consuming those mbs. <br>again if the default server is down or offline, select another one by clicking on the location logo. <br> </span
-        >
-        <span class="read-more" onclick="toggleText(this)">Read More</span>
+          These ips might be updated periodically 
+          if they happen to change over time so keep an eye though the default ones are in the format 10.2xx and 10.6x<br> 
+          on top left (http custom) click on the 3 bars then scroll down till you see mobile ip Hunter. 
+          Paste your copied ip addresses below the IP (ex.10...100) then tap on search <br> 
+          When you successifully find an ip address its time to connect. 
+          Firstly, (Step 1) we begin with psiphon file for http custom that is capped at 18mbs. 
+          You can download something greater than 18mbs so that we quickly deplete those 18 mbs. (mbs range from 14-18). 
+          When depleted the http custom icon at the top changes to a cloud and when you check the logs its stuck on connecting. <br>
+          Our procedure of depleting psiphon's estimated 18mbs is now our Step 1 <br> Now we move to step 2  <br>
+          Open http injector and click on start assuming you've imported the activator file. 
+          Again look for something to download or a way to consume those 45 mbs till they are exhausted. 
+          When successfully connected with the right ip, a 200 OK connection established message appears as part of the logs, 
+          else a 302 temporary moved message appears to show you that your IP address is bad. <br>
+          Due to the nature of activator  internally closing the connection by itself, 
+          occasionally stop and start the connection if you get stuck at downloading or consuming those mbs. <br>
+          again if the default server is down or offline, select another one by clicking on the location logo. <br> </span>
+        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
+        
+        <!-- Video Section -->
+        <div class="video-section" style="display: none;">
+          <!-- Video 1 -->
+          <div class="video-container">
+            <div class="video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/VIDEO_ID_1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="video-description">
+              Description for Video 1: This video explains the process of finding a working IP address in detail.
+            </div>
+          </div>
+        </div>
       </article>
 
       <article>
@@ -216,19 +305,50 @@
         <p>
           Unlimited requires that both step 1 (psiphon) and step 2 (activator) are depleted...
         </p>
-        <span class="more-content"
-          >but you might ask how will I know? <br>Step 1 (psiphon) will no longer connect even with the right up address. But step 2 is a lil bit tricky as it might still connect if you were not aware that the 45mbs had already been depleted. <br>So step 2 requires that you track the logs message for a 302 error message. If that is hard try connecting ha tunnel plus (step 3) to see if it successfully connects if not then it means step 1 or step 2 are not depleted. <br>The reason why it might be hard to know if step 2 is over is because this step can also give you unlimited access but the problem is it being unstable meaning you have to stop-start now and again <br>The only difference between step 2 and step 3 is that step 3 is stable, while step 2 is about connecting, stop and connecting again and again <br> If you hate ads that are in ha tunnel plus, you can use .hc roodito file for http custom or .ehi roodito file for http injector. Take note of these extensions although you'll be alerted if you import a config that is incompatible with the VPN.</span
-        >
-        <span class="read-more" onclick="toggleText(this)">Read More</span>
+        <span class="more-content" style="display: none;">
+          but you might ask how will I know? <br />Step 1 (psiphon) will no longer connect
+          even with the right IP address. But step 2 is a lil bit tricky as it might still
+          connect if you were not aware that the 45mbs had already been depleted. <br />So step 2
+          requires that you track the logs message for a 302 error message. If that is hard try
+          connecting ha tunnel plus (step 3) to see if it successfully connects if not then it
+          means step 1 or step 2 are not depleted. <br />The reason why it might be hard to know
+          if step 2 is over is because this step can also give you unlimited access but the
+          problem is it being unstable meaning you have to stop-start now and again <br />The only
+          difference between step 2 and step 3 is that step 3 is stable, while step 2 is about
+          connecting, stop and connecting again and again <br />If you hate ads that are in ha
+          tunnel plus, you can use .hc roodito file for http custom or .ehi roodito file for http
+          injector. Take note of these extensions although you'll be alerted if you import a
+          config that is incompatible with the VPN.
+        </span>
+        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
+        
+        <!-- Video Section -->
+        <div class="video-section" style="display: none;">
+          <!-- Video 1 -->
+          <div class="video-container">
+            <div class="video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/VIDEO_ID_1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="video-description">
+              Description for Video 1: This video explains the process of finding a working IP address in detail.
+            </div>
+          </div>
+        </div>
       </article>
-
+    
       <article>
         <h2>Final take</h2>
         <p>
           this is a summary of the three steps  to get you connected...
         </p>
-        <span class="more-content"
-          >EACH STEP that is, step 1 and 2 make sure the data is depleted. Step 1 has around 22mbs while step 2 has upto 45 mbs. Step 3 contains the unlimited internet. (Failure to follow these steps you will get 302 error⚠️ when using file in step 3 <br>
+        <span class="more-content" style="display: none;">
+          EACH STEP that is, step 1 and 2 make sure the data is depleted. Step 1 has around 22mbs while step 2 has upto 45 mbs. Step 3 contains the unlimited internet. (Failure to follow these steps you will get 302 error⚠️ when using file in step 3 <br>
 
           IP ADDRESS (for each step) <br>
           
@@ -251,9 +371,27 @@
           
           If you don't want to follow procedure 1 & 2 the alternative is to purchase a daily roodito bundle via *544*14# @ksh20 daily and move to step 3 direct. <br>
           
-          Enjoy🔥👌.</span
-        >
-        <span class="read-more" onclick="toggleText(this)">Read More</span>
+          Enjoy🔥👌.</span>
+        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
+        
+        <!-- Video Section -->
+        <div class="video-section" style="display: none;">
+          <!-- Video 1 -->
+          <div class="video-container">
+            <div class="video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/VIDEO_ID_1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="video-description">
+              Description for Video 1: This video explains the process of finding a working IP address in detail.
+            </div>
+          </div>
+        </div>
       </article>
     </div>
 

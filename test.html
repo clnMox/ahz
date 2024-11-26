@@ -1,181 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tutorials</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #e0e0e0; /* Softer background color */
-      }
-      header {
-        background-color: #00012e;
-        color: white;
-        padding: 10px 0;
-        text-align: center;
-      }
-      nav {
-        background-color: #062006;
-        padding: 10px;
-        text-align: center;
-      }
-      nav a {
-        color: white;
-        margin: 0 15px;
-        text-decoration: none;
-      }
-      .container {
-        padding: 20px;
-      }
-      article {
-        background-color: rgb(206, 202, 197);
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-      footer {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 10px 0;
-        position: relative;
-        width: 100%;
-      }
-      .more-content {
-        display: none;
-        margin-top: 10px;
-      }
-      .read-more {
-        color: blue;
-        cursor: pointer;
-        text-decoration: underline;
-      }
-      .code-container {
-        position: relative;
-        background-color: #ffffff;
-        border: 1px solid #070707;
-        border-radius: 5px;
-        padding: 1px;
-        margin: 2px 0;
-        font-family: monospace;
-        font-size: 16px;
-        overflow: auto;
-      }
-      .copy-btn {
-        position: absolute;
-        top: 1px;
-        right: 3px;
-        background-color: #007bff;
-        color: rgb(255, 255, 255);
-        border: none;
-        padding: 2px 5px;
-        cursor: pointer;
-        border-radius: 1px;
-        font-size: 14px;
-      }
-      .copy-btn:hover {
-        background-color: #0056b3;
-      }
-      .code-container code {
-        white-space: pre-wrap;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Welcome to My Tutorial Blog</h1>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article with Videos</title>
+  <style>
+    .more-content {
+      display: none; /* Hide additional content initially */
+    }
 
-    <div class="container">
-      <article>
-        <h2>How to Find a Working IP Address</h2>
-        <p>
-          You need a specific IP address in the format 10.2x and 101.x where x
-          is any number between 0 and 9...
-        </p>
-        <span class="more-content"
-          >This format is often used for testing environments
-          <div class="code-container">
-            <button class="copy-btn" onclick="copyToClipboard(this)">
-              Copy
-            </button>
-            <code>rapiddns --ip 8.8.8.8/24</code>
-          </div>
-          or internal network configurations. For external use, the format may
-          differ based on your internet service provider (ISP) or network
-          setup.</span
-        >
-        <span class="read-more" onclick="toggleText(this)">Read More</span>
-      </article>
+    .expanded .more-content {
+      display: inline; /* Show when expanded */
+    }
 
-      <article>
-        <h2>How to Style with CSS</h2>
-        <p>CSS is a language that describes the style of an HTML document...</p>
-        <span class="more-content"
-          >You can control colors, layout, fonts, and more using CSS. It's a key
-          part of web design, helping to make web pages look appealing and
-          accessible across devices.</span
-        >
-        <span class="read-more" onclick="toggleText(this)">Read More</span>
-      </article>
+    .video-section {
+      display: none; /* Hide video section initially */
+      margin: 20px 0;
+    }
 
-      <article>
-        <h2>Introduction to HTML</h2>
-        <p>
-          HTML is the foundation of web development. It structures the
-          content...
-        </p>
-        <span class="more-content"
-          >HTML is responsible for organizing content like text, images, and
-          links on a webpage. Each element is represented by a tag, such as
-          <code>&lt;p&gt;</code> for paragraphs or <code>&lt;h1&gt;</code> for
-          headings.</span
-        >
-        <span class="read-more" onclick="toggleText(this)">Read More</span>
-      </article>
+    .expanded .video-section {
+      display: flex; /* Show when expanded */
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .video-container {
+      position: relative;
+      width: 300px;
+      overflow: hidden;
+      border-radius: 4px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      background: #fff;
+    }
+
+    .video-wrapper iframe {
+      width: 100%;
+      height: 150px;
+    }
+
+    .video-description {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #333;
+      padding: 10px;
+    }
+
+    .read-more {
+      color: #007bff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <article id="article">
+    <h2>How to Connect to Unlimited Safaricom</h2>
+    <p>
+      Unlimited requires that both step 1 (psiphon) and step 2 (activator) are depleted...
+    </p>
+    <span class="more-content">
+      but you might ask how will I know? <br />Step 1 (psiphon) will no longer connect
+      even with the right IP address. But step 2 is a lil bit tricky as it might still
+      connect if you were not aware that the 45mbs had already been depleted. <br />So step 2
+      requires that you track the logs message for a 302 error message. If that is hard try
+      connecting ha tunnel plus (step 3) to see if it successfully connects if not then it
+      means step 1 or step 2 are not depleted. <br />The reason why it might be hard to know
+      if step 2 is over is because this step can also give you unlimited access but the
+      problem is it being unstable meaning you have to stop-start now and again <br />The only
+      difference between step 2 and step 3 is that step 3 is stable, while step 2 is about
+      connecting, stop and connecting again and again <br />If you hate ads that are in ha
+      tunnel plus, you can use .hc roodito file for http custom or .ehi roodito file for http
+      injector. Take note of these extensions although you'll be alerted if you import a
+      config that is incompatible with the VPN.
+    </span>
+    <span class="read-more" onclick="toggleContent()">Read More</span>
+
+    <!-- Video Section -->
+    <div class="video-section">
+      <!-- Video 1 -->
+      <div class="video-container">
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_1"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="video-description">
+          Description for Video 1: This video explains the process of finding a working IP address in detail.
+        </div>
+      </div>
+
+      <!-- Video 2 -->
+      <div class="video-container">
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_2"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="video-description">
+          Description for Video 2: Learn about advanced techniques to troubleshoot IP connectivity.
+        </div>
+      </div>
+
+      <!-- Video 3 -->
+      <div class="video-container">
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_3"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="video-description">
+          Description for Video 3: A quick guide to identifying the best working IPs for your network.
+        </div>
+      </div>
     </div>
+  </article>
 
-    <footer>
-      <p>&copy; 2024 freenet254.linkpc.net Blog</p>
-    </footer>
+  <script>
+    function toggleContent() {
+      const article = document.getElementById('article');
+      article.classList.toggle('expanded'); // Toggle the 'expanded' class
 
-    <script>
-      function toggleText(element) {
-        var moreContent = element.previousElementSibling;
-        if (
-          moreContent.style.display === "none" ||
-          moreContent.style.display === ""
-        ) {
-          moreContent.style.display = "inline";
-          element.textContent = "Read Less";
-        } else {
-          moreContent.style.display = "none";
-          element.textContent = "Read More";
-        }
+      if (article.classList.contains('expanded')) {
+        // Scroll to the video section after expanding
+        const videoSection = document.querySelector('.video-section');
+        videoSection.scrollIntoView({ behavior: 'smooth' });
       }
-
-      function copyToClipboard(button) {
-        const code = button.nextElementSibling.textContent; // Use nextElementSibling to select the code
-        navigator.clipboard
-          .writeText(code)
-          .then(() => {
-            button.textContent = "✅ Copied"; // Change the button text to "Copied"
-            button.style.backgroundColor = "#28a745"; // Change color to green when copied
-
-            // Reset button text back to "Copy" after 2 seconds
-            setTimeout(() => {
-              button.textContent = "Copy";
-              button.style.backgroundColor = "#007bff"; // Revert back to original color
-            }, 2000);
-          })
-          .catch((err) => {
-            console.error("Failed to copy: ", err);
-          });
-      }
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>
