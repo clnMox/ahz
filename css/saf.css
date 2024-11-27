@@ -148,7 +148,7 @@ header {
   color: #000;
 }
 article {
-  background-color: rgba(0, 0, 0, 0.74);
+  background-color: #03001d;
   color: #ffc6c6;
   padding: 20px;
   margin-bottom: 20px;
@@ -310,6 +310,14 @@ button:hover {
 /* Link styles */
 p a {
   color: #ffd903;
+}
+
+a {
+  color: #01ffea;
+}
+
+a:hover{
+  color: #ffd104;
 }
 
 p a:hover {
