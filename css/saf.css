@@ -322,6 +322,11 @@ h1 {
   font-size: 2rem;
   margin-bottom: 20px;
 }
+h2 {
+  color: #00a2ff;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
 
 h5 {
   display: flex;
