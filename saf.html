@@ -1,72 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="/images/download.jpeg" type="image/png" sizes="192x192"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/saf.css" />
-  <title>Safaricom Files</title>
-  <script>
-    function displayDate() {
-      const uploadedDate = new Date("2024-10-19");
-      const modifiedDate = new Date();
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="/images/download.jpeg"
+      type="image/png"
+      sizes="192x192"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/saf.css" />
+    <title>Safaricom Files</title>
+    <script>
+      function displayDate() {
+        const uploadedDate = new Date("2024-10-19");
+        const modifiedDate = new Date();
 
-      for (let i = 1; i <= 3; i++) {
-        document.getElementById(`uploaded-date-${i}`).textContent =
-          uploadedDate.toDateString();
-        document.getElementById(`modified-date-${i}`).textContent =
-          modifiedDate.toDateString();
+        for (let i = 1; i <= 3; i++) {
+          document.getElementById(`uploaded-date-${i}`).textContent =
+            uploadedDate.toDateString();
+          document.getElementById(`modified-date-${i}`).textContent =
+            modifiedDate.toDateString();
+        }
       }
-    }
 
-    window.onload = displayDate;
+      window.onload = displayDate;
 
-    function slide(direction) {
-      const slider = document.querySelector(".slider");
-      slider.scrollLeft += direction * 320; // Adjust based on card width
-    }
-    // Toggle Collapsible Functionality
-    function toggleCollapse(sectionId) {
-      const section = document.getElementById(sectionId);
-      section.style.display = section.style.display === "block" ? "none" : "block";
-    }
-
-    // Toggle Read More functionality
-    function toggleText(button) {
-      // Get the related elements based on the button clicked
-      const moreContent = button.previousElementSibling;  // This gets the .more-content element
-      const videoSection = button.closest('article').querySelector('.video-section');  // Get the video section in the same article
-    
-      // Check current visibility and toggle accordingly
-      if (moreContent.style.display === "none" || moreContent.style.display === "") {
-        moreContent.style.display = "inline"; // Show the hidden text
-        button.textContent = "Read Less"; // Update button text
-        videoSection.style.display = "flex"; // Show the video section
-      } else {
-        moreContent.style.display = "none"; // Hide the hidden text
-        button.textContent = "Read More"; // Update button text
-        videoSection.style.display = "none"; // Hide the video section
+      function slide(direction) {
+        const slider = document.querySelector(".slider");
+        slider.scrollLeft += direction * 320; // Adjust based on card width
       }
-    }
 
-  </script>
+      function showSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+        sidebar.style.display = "flex";
+      }
+      function hideSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+        sidebar.style.display = "none";
+      }
+
+      // Toggle Collapsible Functionality
+      function toggleCollapse(sectionId) {
+        const section = document.getElementById(sectionId);
+        section.style.display =
+          section.style.display === "block" ? "none" : "block";
+      }
+
+      // Toggle Read More functionality
+      function toggleText(button) {
+        // Get the related elements based on the button clicked
+        const moreContent = button.previousElementSibling; // This gets the .more-content element
+        const videoSection = button
+          .closest("article")
+          .querySelector(".video-section"); // Get the video section in the same article
+
+        // Check current visibility and toggle accordingly
+        if (
+          moreContent.style.display === "none" ||
+          moreContent.style.display === ""
+        ) {
+          moreContent.style.display = "inline"; // Show the hidden text
+          button.textContent = "Read Less"; // Update button text
+          videoSection.style.display = "flex"; // Show the video section
+        } else {
+          moreContent.style.display = "none"; // Hide the hidden text
+          button.textContent = "Read More"; // Update button text
+          videoSection.style.display = "none"; // Hide the video section
+        }
+      }
+
+      function toggleText(element) {
+        var moreContent = element.previousElementSibling;
+        if (
+          moreContent.style.display === "none" ||
+          moreContent.style.display === ""
+        ) {
+          moreContent.style.display = "inline";
+          element.textContent = "Read Less";
+        } else {
+          moreContent.style.display = "none";
+          element.textContent = "Read More";
+        }
+      }
+
+      function copyToClipboard(button) {
+        const code = button.nextElementSibling.textContent; // Use nextElementSibling to select the code
+        navigator.clipboard
+          .writeText(code)
+          .then(() => {
+            button.textContent = "✅ Copied"; // Change the button text to "Copied"
+            button.style.backgroundColor = "#28a745"; // Change color to green when copied
+
+            // Reset button text back to "Copy" after 2 seconds
+            setTimeout(() => {
+              button.textContent = "Copy";
+              button.style.backgroundColor = "#007bff"; // Revert back to original color
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Failed to copy: ", err);
+          });
+      }
+    </script>
   </head>
   <body>
     <nav>
       <ul class="sidebar">
-        <li onclick=hideSidebar()><a href="#"><img width="30" height="30" src="https://img.icons8.com/ios-glyphs/30/macos-close.png" alt="macos-close"/></a></li>
+        <li onclick="hideSidebar()">
+          <a href="#"
+            ><img
+              width="30"
+              height="30"
+              src="https://img.icons8.com/ios-glyphs/30/macos-close.png"
+              alt="macos-close"
+          /></a>
+        </li>
         <li><a href="home.html">Home</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="login.html">Login</a></li>
       </ul>
       <ul>
-        <li><a href="#"><img src="images/mox.jpg" alt="logo"></a></li>
+        <li>
+          <a href="#"><img src="images/mox.jpg" alt="logo" /></a>
+        </li>
         <li class="hideOnMobile"><a href="home.html">Home</a></li>
         <li class="hideOnMobile"><a href="about.html">About</a></li>
         <li class="hideOnMobile"><a href="login.html">Login</a></li>
-        <li class="menu-button" onclick=showSidebar()><a href="#"><img width="26" height="26" src="https://img.icons8.com/fluency/100/menu--v2.png" alt="menu--v2"/></a></li>
+        <li class="menu-button" onclick="showSidebar()">
+          <a href="#"
+            ><img
+              width="26"
+              height="26"
+              src="https://img.icons8.com/fluency/100/menu--v2.png"
+              alt="menu--v2"
+          /></a>
+        </li>
       </ul>
     </nav>
     <header>
@@ -171,33 +248,70 @@
 
     <div class="container">
       <article>
-        <h2>HOW TO CONNECT SAFARICOM UNLIMITED <br>DON'T SKIP ANY OF THIS STEPS🔥</h2>
-        <p>After downloading 
-          <a href="https://play.google.com/store/apps/details?id=xyz.easypro.httpcustom" target="_blank">http CUSTOM </a>, 
-          <a href="https://play.google.com/store/apps/details?id=com.evozi.injector" target="_blank">http INJECTOR </a>& 
-          <a href="https://play.google.com/store/apps/details?id=com.hatunnel.plus" target="_blank">ha TUNNEL plus</a> 
-          applications from <a href="https://play.google.com/store/apps/">google PLAYSTORE</a>, 
+        <h2>
+          HOW TO CONNECT SAFARICOM UNLIMITED <br />DON'T SKIP ANY OF THIS
+          STEPS🔥
+        </h2>
+        <p>
+          After downloading
+          <a
+            href="https://play.google.com/store/apps/details?id=xyz.easypro.httpcustom"
+            target="_blank"
+            >http CUSTOM </a
+          >,
+          <a
+            href="https://play.google.com/store/apps/details?id=com.evozi.injector"
+            target="_blank"
+            >http INJECTOR </a
+          >&
+          <a
+            href="https://play.google.com/store/apps/details?id=com.hatunnel.plus"
+            target="_blank"
+            >ha TUNNEL plus</a
+          >
+          applications from
+          <a href="https://play.google.com/store/apps/">google PLAYSTORE</a>,
           for first timers, you need to setup...
         </p>
-        <span class="more-content" style="display: none;">
-          your HTTP Custom as the default assistant app to help you search for the ip addresses automatically. <br> 
-          <a href="images/tuui11.jpg" target="_blank"><img src="images/tuui11.jpg" alt="logs" style="max-width: 100%; height: 200px;"></a><br>
-          Under your phone settings, search for "assistance app" and select http custom instead of the default Google. <br> 
-          Alternatively, open http custom and on top left click on the 3 bars then scroll down till you see mobile ip Hunter. <br> 
-          Tap on search and it will navigate you directly to the digital assistant where you can select HC as the default one. 
-          If all these fail you'll have to manually hunt for the ip addresses by toggling on and off flight mode and 
-          checking if the correct ip address has been found via the LOG tab as seen when you swipe to the left. <br>
-         <!-- Thumbnail Image with Link to Full Image -->
-        <a href="images/photo_ij-22.jpg" target="_blank"><img src="images/photo_ij-22.jpg" alt="logs" style="max-width: 100%; height: 200px;"></a><br>
+        <span class="more-content" style="display: none">
+          your HTTP Custom as the default assistant app to help you search for
+          the ip addresses automatically. <br />
+          <a href="images/tuui11.jpg" target="_blank"
+            ><img
+              src="images/tuui11.jpg"
+              alt="logs"
+              style="max-width: 100%; height: 200px; align-items: center" /></a
+          ><br />
+          Under your phone settings, search for "assistance app" and select http
+          custom instead of the default Google. <br />
+          Alternatively, open http custom and on top left click on the 3 bars
+          then scroll down till you see mobile ip Hunter. <br />
+          Tap on search and it will navigate you directly to the digital
+          assistant where you can select HC as the default one. If all these
+          fail you'll have to manually hunt for the ip addresses by toggling on
+          and off flight mode and checking if the correct ip address has been
+          found via the LOG tab as seen when you swipe to the left. <br />
+          <!-- Thumbnail Image with Link to Full Image -->
+          <a href="images/photo_ij-22.jpg" target="_blank"
+            ><img
+              src="images/photo_ij-22.jpg"
+              alt="logs"
+              style="max-width: 100%; height: 200px" /></a
+          ><br />
 
-          After successifully setting up hc as the default assistant app, download http custom psiphon file and activator file. <br>
+          After successifully setting up hc as the default assistant app,
+          download http custom psiphon file and activator file. <br />
           The files are saved by default to the download folder in your device.
         </span>
-        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
-        
-        <!-- Video Section 1 -->
-        <div class="video-section" style="display: block; border: 1px solid red;">
+        <span class="read-more" onclick="toggleText(this)">
+          <br />Read More</span
+        >
 
+        <!-- Video Section 1 -->
+        <div
+          class="video-section"
+          style="display: block; border: 1px solid rgb(255, 255, 255)"
+        >
           <!-- Video 1 -->
           <div class="video-container">
             <div class="video-wrapper">
@@ -205,39 +319,56 @@
                 src="https://drive.google.com/file/d/1JsByVIm0Mb9ABnnOkWfJTyM4Fuk4mQit/preview"
                 title="Google Drive video player"
                 frameborder="0"
-                width="640"  
-                height="360" 
+                width="640"
+                height="360"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
+                allowfullscreen
+              >
               </iframe>
             </div>
             <div class="video-description">
-              This video explains the process of setting HTTP Custom as the default IP hunting assistant.
+              This video explains the process of setting HTTP Custom as the
+              default IP hunting assistant.
             </div>
           </div>
         </div>
       </article>
-    
-      <article>
-        <h2>How to  import a file</h2>
-        <p>Importing is the process of loading a file into your vpn application. Importing a file...</p>
-        <span class="more-content" style="display: none;">
-          consistes of clicking a file say activator.ehi or psiphon.hc then an open with pop up menu appears 
-          asking you to choose an app to open with. <br>
-          If you're loading a .hc then choose http custom. if its a .ehi choose http injector. if its .ha select ha tunnel plus. <br>
-          Alternatively via in app, on http custom click on the + at the bottom right and select open config. 
-          Since our config has been saved into the download folder, 
-          navigate to your download folder and you'll find it there then tap on it to load automatically. <br>
-          For injector, click on the file icon in between setting icon and three dots then choose import config, 
-          select internal storage the navigate to downloads folder. tap on activator.ehi and it will be loaded automatically. <br>
-          For ha tunnel click on the 3 dots, then you'll see import/export. import configure then it will take you to your internal storage. 
-          search for ha tunnel.hat and tap on it to import. <br> 
-          Alternatively search for the files using their extensions to quickly index them out,  that is .ehi .ha or .hc</span>
-        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
-        
-        <!-- Video Section 1 -->
-        <div class="video-section" style="display: block; border: 1px solid red;">
 
+      <article>
+        <h2>How to import a file</h2>
+        <p>
+          Importing is the process of loading a file into your vpn application.
+          Importing a file...
+        </p>
+        <span class="more-content" style="display: none">
+          consistes of clicking a file say activator.ehi or psiphon.hc then an
+          open with pop up menu appears asking you to choose an app to open
+          with. <br />
+          If you're loading a .hc then choose http custom. if its a .ehi choose
+          http injector. if its .ha select ha tunnel plus. <br />
+          Alternatively via in app, on http custom click on the + at the bottom
+          right and select open config. Since our config has been saved into the
+          download folder, navigate to your download folder and you'll find it
+          there then tap on it to load automatically. <br />
+          For injector, click on the file icon in between setting icon and three
+          dots then choose import config, select internal storage the navigate
+          to downloads folder. tap on activator.ehi and it will be loaded
+          automatically. <br />
+          For ha tunnel click on the 3 dots, then you'll see import/export.
+          import configure then it will take you to your internal storage.
+          search for ha tunnel.hat and tap on it to import. <br />
+          Alternatively search for the files using their extensions to quickly
+          index them out, that is .ehi .ha or .hc</span
+        >
+        <span class="read-more" onclick="toggleText(this)">
+          <br />Read More</span
+        >
+
+        <!-- Video Section 1 -->
+        <div
+          class="video-section"
+          style="display: block; border: 1px solid red"
+        >
           <!-- Video 1 -->
           <div class="video-container">
             <div class="video-wrapper">
@@ -245,10 +376,11 @@
                 src="https://drive.google.com/file/d/1nuiPc8z3YDqKPAtpnnAwQeRK2ogSAI7J/preview"
                 title="Google Drive video player"
                 frameborder="0"
-                width="640"  
-                height="360" 
+                width="640"
+                height="360"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
+                allowfullscreen
+              >
               </iframe>
             </div>
             <div class="video-description">
@@ -257,7 +389,6 @@
           </div>
         </div>
       </article>
-    
 
       <article>
         <h2>How to Find a Working IP Address</h2>
@@ -265,42 +396,83 @@
           You need a specific IP address in the format 10.2x and 101.x where x
           is any number between 0 and 9...
         </p>
-        <span class="more-content" style="display: none;">
+        <span class="more-content" style="display: none">
           These ips are essential to get you connected.
           <div class="code-container">
             <button class="copy-btn" onclick="copyToClipboard(this)">
               Copy
             </button>
             <code
-              >10.208;10.209;10.210;10.211;10.212;10.213;10.214;10.215;10.216;10.217;10.218;10.219;10.22010.222;10.236;10.237;10.239;10.244;10.245;10.246;10.247;10.248;10.249;10.60;10.61;10.62;10.63;10.221;10.222;10.228</code>
+              >10.208;10.209;10.210;10.211;10.212;10.213;10.214;10.215;10.216;10.217;10.218;10.219;10.22010.222;10.236;10.237;10.239;10.244;10.245;10.246;10.247;10.248;10.249;10.60;10.61;10.62;10.63;10.221;10.222;10.228</code
+            >
           </div>
-          These ips might be updated periodically 
-          if they happen to change over time so keep an eye though the default ones are in the format 10.2xx and 10.6x<br> 
-          on top left (http custom) click on the 3 bars then scroll down till you see mobile ip Hunter. 
-          Paste your copied ip addresses below the IP (ex.10...100) then tap on search <br> 
-          When you successifully find an ip address its time to connect. <br>
-          <a href="images/photo_2024-11-26_22-42-51.jpg" target="_blank"><img src="images/photo_2024-11-26_22-42-51.jpg" alt="logs" style="max-width: 100%; height: 200px;"></a><br> 
-          Firstly, (Step 1) we begin with psiphon file for http custom that is capped at 18mbs. 
-          You can download something greater than 18mbs so that we quickly deplete those 18 mbs. (mbs range from 14-18). 
-          When depleted the http custom icon at the top changes to a cloud and when you check the logs its stuck on connecting. <br>
-          <a href="images/photo_ij-22.jpg" target="_blank"><img src="images/photo_ij-22.jpg" alt="logs" style="max-width: 100%; height: 200px;"></a><br>
-          <a href="images/photo_2024-11-26_22-47-18.jpg" target="_blank"><img src="images/photo_2024-11-26_22-47-18.jpg" alt="logs" style="max-width: 100%; height: 200px;"></a><br>
-          Our procedure of depleting psiphon's estimated 18mbs is now our Step 1 <br> Now we move to step 2  <br>
-          Open http injector and click on start assuming you've imported the activator file. 
-          Again look for something to download or a way to consume those 45 mbs till they are exhausted. 
-          When successfully connected with the right ip, a 200 OK connection established message appears as part of the logs,
-          <a href="images/photo_2024-11-26_22-50-00.jpg" target="_blank"><img src="images/photo_2024-11-26_22-50-00.jpg" alt="logs" style="max-width: 100%; height: 200px;"></a><br>
-          else a 302 temporary moved message appears to show you that your IP address is bad. <br>
-          <a href="images/photo_2024-11-26_22-55-02.jpg" target="_blank"><img src="images/photo_2024-11-26_22-55-02.jpg" alt="logs" style="max-width: 100%; height: 200px;"></a><br>
-          Due to the nature of activator  internally closing the connection by itself, 
-          occasionally stop and start the connection if you get stuck at downloading or consuming those mbs. <br>
-          again if the default server is down or offline, select another one by clicking on the location logo. <br> 
+          These ips might be updated periodically if they happen to change over
+          time so keep an eye though the default ones are in the format 10.2xx
+          and 10.6x<br />
+          on top left (http custom) click on the 3 bars then scroll down till
+          you see mobile ip Hunter. Paste your copied ip addresses below the IP
+          (ex.10...100) then tap on search <br />
+          When you successifully find an ip address its time to connect. <br />
+          <a href="images/photo_2024-11-26_22-42-51.jpg" target="_blank"
+            ><img
+              src="images/photo_2024-11-26_22-42-51.jpg"
+              alt="logs"
+              style="max-width: 100%; height: 200px" /></a
+          ><br />
+          Firstly, (Step 1) we begin with psiphon file for http custom that is
+          capped at 18mbs. You can download something greater than 18mbs so that
+          we quickly deplete those 18 mbs. (mbs range from 14-18). When depleted
+          the http custom icon at the top changes to a cloud and when you check
+          the logs its stuck on connecting. <br />
+          <a href="images/photo_ij-22.jpg" target="_blank"
+            ><img
+              src="images/photo_ij-22.jpg"
+              alt="logs"
+              style="max-width: 100%; height: 200px" /></a
+          ><br />
+          <a href="images/photo_2024-11-26_22-47-18.jpg" target="_blank"
+            ><img
+              src="images/photo_2024-11-26_22-47-18.jpg"
+              alt="logs"
+              style="max-width: 100%; height: 200px" /></a
+          ><br />
+          Our procedure of depleting psiphon's estimated 18mbs is now our Step 1
+          <br />
+          Now we move to step 2 <br />
+          Open http injector and click on start assuming you've imported the
+          activator file. Again look for something to download or a way to
+          consume those 45 mbs till they are exhausted. When successfully
+          connected with the right ip, a 200 OK connection established message
+          appears as part of the logs,
+          <a href="images/photo_2024-11-26_22-50-00.jpg" target="_blank"
+            ><img
+              src="images/photo_2024-11-26_22-50-00.jpg"
+              alt="logs"
+              style="max-width: 100%; height: 200px" /></a
+          ><br />
+          else a 302 temporary moved message appears to show you that your IP
+          address is bad. <br />
+          <a href="images/photo_2024-11-26_22-55-02.jpg" target="_blank"
+            ><img
+              src="images/photo_2024-11-26_22-55-02.jpg"
+              alt="logs"
+              style="max-width: 100%; height: 200px" /></a
+          ><br />
+          Due to the nature of activator internally closing the connection by
+          itself, occasionally stop and start the connection if you get stuck at
+          downloading or consuming those mbs. <br />
+          again if the default server is down or offline, select another one by
+          clicking on the location logo. <br />
         </span>
-        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
-        
-        <!-- Video Section 1 -->
-        <div class="video-section" style="display: block; border: 1px solid red;">
+        <span class="read-more" onclick="toggleText(this)">
+          <br />Read More</span
+        >
 
+        <!-- Video Section 1 -->
+        <div
+          class="video-section"
+          style="display: block; border: 1px solid red"
+        >
           <!-- Video 1 -->
           <div class="video-container">
             <div class="video-wrapper">
@@ -308,10 +480,11 @@
                 src="https://drive.google.com/file/d/1oRo521Cr9FmNUfYxhIjeVbGyQzGIvjlV/preview"
                 title="Google Drive video player"
                 frameborder="0"
-                width="640"  
-                height="360" 
+                width="640"
+                height="360"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
+                allowfullscreen
+              >
               </iframe>
             </div>
             <div class="video-description">
@@ -324,37 +497,53 @@
       <article>
         <h2>How to Connect to Unlimited Safaricom</h2>
         <p>
-          Unlimited requires that both step 1 (psiphon) and step 2 (activator) are depleted...
+          Unlimited requires that both step 1 (psiphon) and step 2 (activator)
+          are depleted...
         </p>
-        <span class="more-content" style="display: none;">
-          but you might ask how will I know? <br />Step 1 (psiphon) will 
-          <a href="images/photo_2024-11-26_22-47-18.jpg" target="_blank">no longer connect</a> even with the right IP address.
-          But step 2 is a lil bit tricky as it might still
-          connect if you were not aware that the 45mbs had already been depleted. <br />So step 2
-          requires that you track the logs message for a <a href="images/photo_2024-11-26_22-55-02.jpg" target="_blank">302 error message.</a>  
-          If that is hard try
-          connecting ha tunnel plus (step 3) to see if it successfully connects 
-          if not then it
-          means step 1 or step 2 are not depleted. <br />The reason why it might be hard to know
-          if step 2 is over is because this step can also give you unlimited access but the
-          problem is it being unstable meaning you have to stop-start now and again <br />The only
-          difference between step 2 and step 3 is that step 3 is stable, while step 2 is about
-          connecting, stop and connecting again and again <br />If you hate ads that are in ha
-          tunnel plus, you can use <a href="media/HCroodito.hc">.hc roodito file</a>  for http custom. 
-          Take note of these extensions although you'll be alerted if you import a
-          config that is incompatible with the VPN. <br>
-          STEP 3 HA TUNNEL<br>
+        <span class="more-content" style="display: none">
+          but you might ask how will I know? <br />Step 1 (psiphon) will
+          <a href="images/photo_2024-11-26_22-47-18.jpg" target="_blank"
+            >no longer connect</a
+          >
+          even with the right IP address. But step 2 is a lil bit tricky as it
+          might still connect if you were not aware that the 45mbs had already
+          been depleted. <br />So step 2 requires that you track the logs
+          message for a
+          <a href="images/photo_2024-11-26_22-55-02.jpg" target="_blank"
+            >302 error message.</a
+          >
+          If that is hard try connecting ha tunnel plus (step 3) to see if it
+          successfully connects if not then it means step 1 or step 2 are not
+          depleted. <br />The reason why it might be hard to know if step 2 is
+          over is because this step can also give you unlimited access but the
+          problem is it being unstable meaning you have to stop-start now and
+          again <br />The only difference between step 2 and step 3 is that step
+          3 is stable, while step 2 is about connecting, stop and connecting
+          again and again <br />If you hate ads that are in ha tunnel plus, you
+          can use <a href="media/HCroodito.hc">.hc roodito file</a> for http
+          custom. Take note of these extensions although you'll be alerted if
+          you import a config that is incompatible with the VPN. <br />
+          STEP 3 HA TUNNEL<br />
           Look for a new ip address in Http CUSTOM then head over to Ha Tunnel
-          If you haven't imported your config, Just import it and press connect. If the current location is unstable change it to a different one <br>
-          you can also change the port number to 80 or 443. In this step you only look for an ip if it has changed by itself <br>
-          incase of a call, yoi use 3G or poor network signal at your locality and not everytime you want to connect to ha <br>
-          To maintain your ip address, avoid flight mode or switching lines or switching off your device.
+          If you haven't imported your config, Just import it and press connect.
+          If the current location is unstable change it to a different one
+          <br />
+          you can also change the port number to 80 or 443. In this step you
+          only look for an ip if it has changed by itself <br />
+          incase of a call, yoi use 3G or poor network signal at your locality
+          and not everytime you want to connect to ha <br />
+          To maintain your ip address, avoid flight mode or switching lines or
+          switching off your device.
         </span>
-        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
-        
-        <!-- Video Section 1 -->
-        <div class="video-section" style="display: block; border: 1px solid red;">
+        <span class="read-more" onclick="toggleText(this)">
+          <br />Read More</span
+        >
 
+        <!-- Video Section 1 -->
+        <div
+          class="video-section"
+          style="display: block; border: 1px solid red"
+        >
           <!-- Video 1 -->
           <div class="video-container">
             <div class="video-wrapper">
@@ -362,10 +551,11 @@
                 src="https://drive.google.com/file/d/1oR0W7tmt3HH9ZebBK__5UCqDaZg_asB_/preview"
                 title="Google Drive video player"
                 frameborder="0"
-                width="640"  
-                height="360" 
+                width="640"
+                height="360"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
+                allowfullscreen
+              >
               </iframe>
             </div>
             <div class="video-description">
@@ -374,44 +564,62 @@
           </div>
         </div>
       </article>
-    
+
       <article>
         <h2>Final take</h2>
-        <p>
-          this is a summary of the three steps  to get you connected...
-        </p>
-        <span class="more-content" style="display: none;">
-          EACH STEP that is, step 1 and 2 make sure the data is depleted. Step 1 has around 22mbs while step 2 has upto 45 mbs. Step 3 contains the unlimited internet. (Failure to follow these steps you will get 302 error⚠️ when using file in step 3 <br>
+        <p>this is a summary of the three steps to get you connected...</p>
+        <span class="more-content" style="display: none">
+          EACH STEP that is, step 1 and 2 make sure the data is depleted. Step 1
+          has around 22mbs while step 2 has upto 45 mbs. Step 3 contains the
+          unlimited internet. (Failure to follow these steps you will get 302
+          error⚠️ when using file in step 3 <br />
 
-          IP ADDRESS (for each step) <br>
-          
-          Step 1 (PSIPHON)👇🏾👇🏾{Once per day} <br>
-          
-          101;10.17;10.18;10.19;10.228 <br>
-          <img src="https://drive.google.com/uc?id=YOUR_IMAGE_ID" alt="Screenshot of Import File Process" style="max-width: 100%; height: auto;">
-          
-          Step 2 (ACTIVATOR})👇🏾{Once per day} <br>
-          
-          101;10.17;10.18;10.19;10.228;10.60;10.61;10.62;10.63;10.64;10.206;10.207;10.208;10.209;10.210;10.211;10.212;10.213;10.214;10.215;10.216;10.218;10.220;10.221;10.222;10.229;10.237;10.238;10.239;10.244;10.245;10.246;10.247;10.248;10.249;10.250 <br>
-          
-          Step 3 (UNLIMITED FILE)👇🏾👇🏾{N&B} <br>
-          
-          10.228;10.60;10.61;10.62;10.63;10.64;10.206;10.207;10.208;10.209;10.210;10.211;10.212;10.213;10.214;10.215;10.216;10.218;10.220;10.221;10.222;10.229;10.237;10.238;10.239;10.244;10.245;10.246;10.247;10.248;10.249;10.250 <br>
-          
-          N/B
-          If you switch off your phone or you wish to disconnect, next time just look for the ip and connect. Until the next day is when you repeat the process again. Also if your ip address doesn't change often while in 4g LTE you can maintain that ip address after midnight to the next day and be connected without performing step 1 & 2 until you change it via flight mode <br>
-          
-          Each step make sure you look for a different IP address. <br>
-          
-          If you don't want to follow procedure 1 & 2 the alternative is to <br>
-          purchase a daily roodito bundle via *544*14# then option 5, then option 2 200mbs @ksh20 daily and move to step 3 direct.<br>
-          The 200mbs will remain intact since you won't consume them but rather they will expire after 24 hours.
-          Enjoy🔥👌.</span>
-        <span class="read-more" onclick="toggleText(this)"> <br>Read More</span>
-        
+          IP ADDRESS (for each step) <br />
+
+          Step 1 (PSIPHON)👇🏾👇🏾{Once per day} <br />
+
+          101;10.17;10.18;10.19;10.228 <br />
+          <img
+            src="https://drive.google.com/uc?id=YOUR_IMAGE_ID"
+            alt="Screenshot of Import File Process"
+            style="max-width: 100%; height: auto"
+          />
+
+          Step 2 (ACTIVATOR})👇🏾{Once per day} <br />
+
+          101;10.17;10.18;10.19;10.228;10.60;10.61;10.62;10.63;10.64;10.206;10.207;10.208;10.209;10.210;10.211;10.212;10.213;10.214;10.215;10.216;10.218;10.220;10.221;10.222;10.229;10.237;10.238;10.239;10.244;10.245;10.246;10.247;10.248;10.249;10.250
+          <br />
+
+          Step 3 (UNLIMITED FILE)👇🏾👇🏾{N&B} <br />
+
+          10.228;10.60;10.61;10.62;10.63;10.64;10.206;10.207;10.208;10.209;10.210;10.211;10.212;10.213;10.214;10.215;10.216;10.218;10.220;10.221;10.222;10.229;10.237;10.238;10.239;10.244;10.245;10.246;10.247;10.248;10.249;10.250
+          <br />
+
+          N/B If you switch off your phone or you wish to disconnect, next time
+          just look for the ip and connect. Until the next day is when you
+          repeat the process again. Also if your ip address doesn't change often
+          while in 4g LTE you can maintain that ip address after midnight to the
+          next day and be connected without performing step 1 & 2 until you
+          change it via flight mode <br />
+
+          Each step make sure you look for a different IP address. <br />
+
+          If you don't want to follow procedure 1 & 2 the alternative is to
+          <br />
+          purchase a daily roodito bundle via *544*14# then option 5, then
+          option 2 200mbs @ksh20 daily and move to step 3 direct.<br />
+          The 200mbs will remain intact since you won't consume them but rather
+          they will expire after 24 hours. Enjoy🔥👌.</span
+        >
+        <span class="read-more" onclick="toggleText(this)">
+          <br />Read More</span
+        >
+
         <!-- Video Section 1 -->
-        <div class="video-section" style="display: block; border: 1px solid red;">
-
+        <div
+          class="video-section"
+          style="display: block; border: 1px solid red"
+        >
           <!-- Video 1 -->
           <div class="video-container">
             <div class="video-wrapper">
@@ -419,10 +627,11 @@
                 src="https://drive.google.com/file/d/1KcdLHHUisHAoK_xxtFrQGQYc46BRVKRo/preview"
                 title="Google Drive video player"
                 frameborder="0"
-                width="640"  
-                height="360" 
+                width="640"
+                height="360"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
+                allowfullscreen
+              >
               </iframe>
             </div>
             <div class="video-description">
@@ -439,30 +648,50 @@
         <div class="card1">
           <div class="card-header" id="headingOne">
             <h4 class="mb-0">
-              <a href="javascript:void(0)" onclick="toggleCollapse('collapseOne')">
+              <a
+                href="javascript:void(0)"
+                onclick="toggleCollapse('collapseOne')"
+              >
                 Who is eligible?
               </a>
             </h4>
           </div>
-          <div id="collapseOne" class="collapse-content" style="display: none;">
+          <div id="collapseOne" class="collapse-content" style="display: none">
             <div class="card-body">
-              Any person interested in free data or who can't afford to purchase crazy data deals. <br>you can consume as much as you can without spending a cent that is without dialling *544# or worrying that you'll be accountable in the future for spending a lot of GBs you did'nt purchase. <br>There are no rules or ethics in the whole world that limit or prevents freeNet usage so no one can be held responsible for abusing freeNet policies.
+              Any person interested in free data or who can't afford to purchase
+              crazy data deals. <br />you can consume as much as you can without
+              spending a cent that is without dialling *544# or worrying that
+              you'll be accountable in the future for spending a lot of GBs you
+              did'nt purchase. <br />There are no rules or ethics in the whole
+              world that limit or prevents freeNet usage so no one can be held
+              responsible for abusing freeNet policies.
             </div>
           </div>
         </div>
-  
+
         <!-- Second collapsible card -->
         <div class="card1">
           <div class="card-header" id="headingTwo">
             <h4 class="mb-0">
-              <a href="javascript:void(0)" onclick="toggleCollapse('collapseTwo')">
+              <a
+                href="javascript:void(0)"
+                onclick="toggleCollapse('collapseTwo')"
+              >
                 What is this service referred to as unlimited internet?
               </a>
             </h4>
           </div>
-          <div id="collapseTwo" class="collapse-content" style="display: none;">
+          <div id="collapseTwo" class="collapse-content" style="display: none">
             <div class="card-body">
-              This is a service currently free for use, hence the name FreeNet but no one will force you to use them. FreeNet is scarce and the few normally try hard to gatekeep and protect its usage because if Safaricom gets a clue that is the end of that freeNet. These are loopholes that Safaricom are not aware of that occur during their maintanance schedules, or as a result of their weak systems. (No system is ever perfect or 100% secure) If you don't want anything for free feel free to purchase your preferred data bundle or subscribe to WIFI as you normally do.
+              This is a service currently free for use, hence the name FreeNet
+              but no one will force you to use them. FreeNet is scarce and the
+              few normally try hard to gatekeep and protect its usage because if
+              Safaricom gets a clue that is the end of that freeNet. These are
+              loopholes that Safaricom are not aware of that occur during their
+              maintanance schedules, or as a result of their weak systems. (No
+              system is ever perfect or 100% secure) If you don't want anything
+              for free feel free to purchase your preferred data bundle or
+              subscribe to WIFI as you normally do.
             </div>
           </div>
         </div>
@@ -470,16 +699,43 @@
         <div class="card1">
           <div class="card-header" id="headingThree">
             <h4 class="mb-0">
-              <a href="javascript:void(0)" onclick="toggleCollapse('collapseThree')">
+              <a
+                href="javascript:void(0)"
+                onclick="toggleCollapse('collapseThree')"
+              >
                 Are there any security risks?
               </a>
             </h4>
           </div>
-          <div id="collapseThree" class="collapse-content" style="display: none;">
+          <div
+            id="collapseThree"
+            class="collapse-content"
+            style="display: none"
+          >
             <div class="card-body">
-              NO
-              Apart from exploiting free internet, VPNs are solely known for hiding your real ip address from DCI, Police, authorities and hiding your browsing activity from Safaricom.
-              The freeNet part, these are services offered for free by Safaricom themselves meaning you can't even be arrested or have your line switched off for consuming terrabytes without a purchase history, and thanks to VPNs they hide all your activity from monitoring, even their DPIs wont go past VPN traffic. You've heard about bet bila bundles promos, like betika.com for gamblers, ncpwd.fuzu.com for disabled people, i mean websites that open for free on your safaricom line. So these are what we exploit and turn into freeNet. The same way you have once purchased a youtube bundle only to realize that youll access only youtube, not knowing that with a VPN i can make my device access any website instead of youtube. That is what a VPN does and safaricom will only see traffic to youtube ONLY but they can never know that we have drifted to downloading movies or browsing thanks to VPNs <br>The only way safaricom deals with such trends is to block the unlimited access to these websites or ending their patnerships with those patners or cappong the website to like 20mbs per day a good example is betika.com capped at 8mbs. <br>Lastly is if you have a 3G phone, an older model or a "cheap phone" be sure that a VPN will normally drain your battery very fast or your phone overheats so often when connected to a VPN.
+              NO Apart from exploiting free internet, VPNs are solely known for
+              hiding your real ip address from DCI, Police, authorities and
+              hiding your browsing activity from Safaricom. The freeNet part,
+              these are services offered for free by Safaricom themselves
+              meaning you can't even be arrested or have your line switched off
+              for consuming terrabytes without a purchase history, and thanks to
+              VPNs they hide all your activity from monitoring, even their DPIs
+              wont go past VPN traffic. You've heard about bet bila bundles
+              promos, like betika.com for gamblers, ncpwd.fuzu.com for disabled
+              people, i mean websites that open for free on your safaricom line.
+              So these are what we exploit and turn into freeNet. The same way
+              you have once purchased a youtube bundle only to realize that
+              youll access only youtube, not knowing that with a VPN i can make
+              my device access any website instead of youtube. That is what a
+              VPN does and safaricom will only see traffic to youtube ONLY but
+              they can never know that we have drifted to downloading movies or
+              browsing thanks to VPNs <br />The only way safaricom deals with
+              such trends is to block the unlimited access to these websites or
+              ending their patnerships with those patners or cappong the website
+              to like 20mbs per day a good example is betika.com capped at 8mbs.
+              <br />Lastly is if you have a 3G phone, an older model or a "cheap
+              phone" be sure that a VPN will normally drain your battery very
+              fast or your phone overheats so often when connected to a VPN.
             </div>
           </div>
         </div>
@@ -487,57 +743,29 @@
     </div>
 
     <div class="socials-container">
-      <a data-social="X" style="--accent-color: rgb(0, 14, 212);" href=""><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
-      <a data-social="Telegram" style="--accent-color: rgb(48, 54, 139);" href=""><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Telegram</title><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
-      <a data-social="WhatsApp" style="--accent-color: rgb(136, 255, 0);" href=""><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>WhatsApp</title><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
-      <a data-social="Discord" style="--accent-color: rgb(45, 47, 75);" href=""><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></a>
+      <a data-social="X" style="--accent-color: rgb(0, 14, 212)" href=""
+        ><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <title>X</title>
+          <path
+            d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
+      <a data-social="Telegram" style="--accent-color: rgb(48, 54, 139)" href=""
+        ><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <title>Telegram</title>
+          <path
+            d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
+      <a data-social="WhatsApp" style="--accent-color: rgb(136, 255, 0)" href=""
+        ><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <title>WhatsApp</title>
+          <path
+            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          </svg>/a>
+      <a data-social="Discord" style="--accent-color: rgb(45, 47, 75)" href=""
+        ><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <title>Discord</title>
+          <path
+            d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"
+          /></svg></a>
     </div>
-
-    <script>
-      function showSidebar(){
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.style.display = 'flex'
-      }
-      function hideSidebar(){
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.style.display = 'none'
-      }
-    </script>
-
-    <script>
-      function toggleText(element) {
-        var moreContent = element.previousElementSibling;
-        if (
-          moreContent.style.display === "none" ||
-          moreContent.style.display === ""
-        ) {
-          moreContent.style.display = "inline";
-          element.textContent = "Read Less";
-        } else {
-          moreContent.style.display = "none";
-          element.textContent = "Read More";
-        }
-      }
-
-      function copyToClipboard(button) {
-        const code = button.nextElementSibling.textContent; // Use nextElementSibling to select the code
-        navigator.clipboard
-          .writeText(code)
-          .then(() => {
-            button.textContent = "✅ Copied"; // Change the button text to "Copied"
-            button.style.backgroundColor = "#28a745"; // Change color to green when copied
-
-            // Reset button text back to "Copy" after 2 seconds
-            setTimeout(() => {
-              button.textContent = "Copy";
-              button.style.backgroundColor = "#007bff"; // Revert back to original color
-            }, 2000);
-          })
-          .catch((err) => {
-            console.error("Failed to copy: ", err);
-          });
-      }
-    </script>
 
     <!-- Navigation buttons -->
     <button class="slider-nav prev" onclick="slide(-1)">&#10094;</button>
@@ -550,4 +778,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-  
+  </body>
+</html>
