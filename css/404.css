@@ -1,0 +1,61 @@
+.error {
+    font-size: 130px;
+    font-weight: bold;
+    color: #fff;
+    position: relative;
+    background: #01031d;
+    text-shadow: 2px 2px red, -2px -2px blue;
+    animation: glitch 1s infinite;
+    overflow: hidden;
+
+  }
+  /* Full viewport height */
+.full-height {
+    height: 50vh;
+    margin: 0;
+  }
+  
+  /* Flexbox centering */
+  .center-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    flex-direction: column;
+  }
+  
+  /* Optional: make sure body/html also support full height */
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: #e3e7ee; /* optional background color */
+  }  
+  
+  @keyframes glitch {
+    0% {
+      text-shadow: 2px 2px red, -2px -2px blue;
+      transform: translate(0);
+    }
+    20% {
+      text-shadow: -2px -2px red, 2px 2px blue;
+      transform: translate(-2px, 2px);
+    }
+    40% {
+      text-shadow: 2px -2px red, -2px 2px blue;
+      transform: translate(2px, -2px);
+    }
+    60% {
+      text-shadow: -2px 2px red, 2px -2px blue;
+      transform: translate(-1px, 1px);
+    }
+    80% {
+      text-shadow: 2px 2px red, -2px -2px blue;
+      transform: translate(0);
+    }
+    100% {
+      text-shadow: -2px -2px red, 2px 2px blue;
+      transform: translate(1px, -1px);
+    }
+  }
+  
