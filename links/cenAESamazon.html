@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Censys URL Constructor</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"
+    />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 20px;
+        padding: 20px;
+        transition: background-color 0.3s, color 0.3s;
+        background-color: #000;
+        color: #fff;
+      }
+
+      h1 {
+        color: #ca6f1e;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      input,
+      button,
+      textarea {
+        margin-bottom: 16px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #result {
+        margin-top: 16px;
+      }
+
+      textarea {
+        resize: none;
+        width: 100%;
+      }
+
+      /* Style for the dark mode */
+      .dark-mode body {
+        background-color: #000;
+        color: #fff;
+      }
+
+      .dark-mode label {
+        color: #fff;
+      }
+
+      .dark-mode input,
+      .dark-mode button,
+      .dark-mode textarea {
+        border-color: #666;
+        background-color: #555;
+        color: #fff;
+      }
+
+      .dark-mode button:hover {
+        background-color: #666;
+      }
+    </style>
+    <script>
+      function generateURLs() {
+        const ipAddress = document.getElementById("ipAddress").value;
+        const subnet = parseInt(document.getElementById("subnet").value);
+        const vhost = document.getElementById("vhost").value;
+
+        if (subnet < 16 || subnet > 24) {
+          alert("Please enter a subnet between 16 and 24.");
+          return;
+        }
+
+        const ipParts = ipAddress.split(".").map(Number);
+        const resultsContainer = document.getElementById("result");
+        resultsContainer.value = ""; // Clear previous results
+
+        let increment;
+        switch (subnet) {
+          case 24:
+            increment = 1;
+            break;
+          case 23:
+            increment = 2;
+            break;
+          case 22:
+            increment = 4;
+            break;
+          case 21:
+            increment = 8;
+            break;
+          case 20:
+            increment = 16;
+            break;
+          case 19:
+            increment = 32;
+            break;
+          case 18:
+            increment = 64;
+            break;
+          case 17:
+            increment = 128;
+            break;
+          case 16:
+            increment = 255;
+            break;
+          default:
+            increment = 1;
+            break;
+        }
+
+        let urlGroup = "";
+        let urlCount = 0;
+
+        for (let i = 0; i <= 255; i += increment) {
+          ipParts[2] = i;
+          const endIpParts = [...ipParts];
+          endIpParts[2] = i + increment - 1;
+          endIpParts[3] = 255;
+
+          const endIP = endIpParts.join(".");
+          //const url = `https://search.censys.io/search/report?resource=hosts&q=%28ip%3A+%60${endIP}%2F${subnet}%60%29+and+autonomous_system.name%3D%60AMAZON-02%60&virtual_hosts=ONLY&field=Ip&num_buckets=1000`;
+          //const url = `https://search.censys.io/search/report?resource=hosts&q=ip%3A+%60${endIP}%2F${subnet}%60+and+autonomous_system.asn%3A+16509&virtual_hosts=${vhost}&field=Ip&num_buckets=1000`;
+          const url = `https://search.censys.io/search/report?resource=hosts&q=ip%3A+%60${endIP}%2F${subnet}%60+and+autonomous_system.asn%3A+14618&virtual_hosts=${vhost}&field=Ip&num_buckets=1000`;
+
+          urlGroup += url + "\n";
+          urlCount++;
+
+          if (urlCount === 10) {
+            resultsContainer.value += urlGroup + "\n";
+            urlGroup = "";
+            urlCount = 0;
+          }
+        }
+
+        if (urlGroup) {
+          resultsContainer.value += urlGroup;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Censys URL Constructor</h1>
+
+    <label for="ipAddress">IP Address:</label>
+    <input type="text" id="ipAddress" placeholder="Enter IP address" />
+
+    <label for="vhost">Virtual Hosts:</label>
+    <select id="vhost">
+      <option value="ONLY">ONLY</option>
+      <option value="EXCLUDE">EXCLUDE</option>
+      <option value="INCLUDE" selected>INCLUDE</option>
+    </select>
+
+    <label for="subnet">Subnet:</label>
+    <input type="number" id="subnet" placeholder="Enter subnet" />
+
+    <button onclick="generateURLs()">Generate URLs</button>
+
+    <label for="result">Constructed URLs:</label>
+    <textarea id="result" rows="10" readonly></textarea>
+  </body>
+</html>

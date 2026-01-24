@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multi-Tab URL Opener</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #111, #0f1842);
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px #00ffd5;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #00ffd5;
+    }
+
+    input, select {
+      width: 100%;
+      background: #03092c;
+      color: #eee;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ff0000;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 10px 5px;
+      width: 38%;
+      border: none;
+      border-radius: 8px;
+      background: #00ff626e;
+      color: #111;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #cc0044c5;
+      color: #ffffff;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 15px;
+      color: #444;
+      min-height: 24px;
+    }
+  </style>
+<!-- CSS_ADSBLOCK_START -->
+<link rel="stylesheet" href="https://adblockers.opera-mini.net/css_block/default-domainless.css" type="text/css" />
+<!-- CSS_ADSBLOCK_END -->
+</head>
+<body>
+  <div class="container">
+    <h2>Multi-Tab URL Opener</h2>
+
+    <label for="protocol">Protocol:</label>
+    <select id="protocol">
+      <option value="https://">https://</option>
+      <option value="http://">http://</option>
+    </select>
+
+    <input type="text" id="url" placeholder="Enter URL (e.g. example.com)" />
+
+    <input type="number" id="count" placeholder="Number of times to open" min="1" />
+
+    <label for="speed">Speed:</label>
+    <select id="speed">
+      <option value="slow">1 per second</option>
+      <option value="fast">All at once</option>
+    </select>
+
+    <div>
+      <button onclick="startOpening()">Start</button>
+      <button onclick="closeAllTabs()">Close Tabs</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <script>
+    let openedTabs = [];
+
+    async function startOpening() {
+      const protocol = document.getElementById("protocol").value;
+      const url = document.getElementById("url").value.trim();
+      const count = parseInt(document.getElementById("count").value);
+      const speed = document.getElementById("speed").value;
+      const status = document.getElementById("status");
+
+      if (!url || count <= 0) {
+        status.textContent = "Please enter a valid URL and count.";
+        return;
+      }
+
+      const fullUrl = protocol + url;
+      openedTabs = [];
+      status.textContent = "Opening tabs...";
+
+      if (speed === "slow") {
+        for (let i = 0; i < count; i++) {
+          const tab = window.open(fullUrl, "_blank");
+          if (tab) openedTabs.push(tab);
+          status.textContent = `Opened ${i + 5} of ${count}...`;
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      } else {
+        for (let i = 0; i < count; i++) {
+          const tab = window.open(fullUrl, "_blank");
+          if (tab) openedTabs.push(tab);
+        }
+        status.textContent = `Opened ${openedTabs.length} tab(s) instantly.`;
+      }
+    }
+
+    function closeAllTabs() {
+      openedTabs.forEach(tab => {
+        if (tab && !tab.closed) tab.close();
+      });
+      openedTabs = [];
+      document.getElementById("status").textContent = "All tabs closed.";
+    }
+  </script>
+</body>
+</html>

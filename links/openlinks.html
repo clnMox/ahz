@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Links and Tabs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #000000;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #065e1c;
+            color: white;
+            margin: 40px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgb(199, 188, 166);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        input[type="file"] {
+            display: block;
+            margin: 0 auto 10px;
+        }
+        button {
+            background-color: #0d3158;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5094dd;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #linkContainer {
+            margin-top: 10px;
+        }
+        #linkContainer a {
+            display: flex;
+            color: #0000009c;
+            text-decoration: none;
+            padding: 8px;
+            border: 1px solid #1100ff;
+            background-color: #ffffff;
+            border-radius: 1px;
+            margin-bottom: 1px;
+            transition: background-color 0.3s;
+        }
+        #linkContainer a:hover {
+            background-color: #0d3158;
+            color: #ccc;
+        }
+        #counter {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #ff5100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload a TXT File with Links</h1>
+        
+        <input type="file" id="fileInput" accept=".txt" />
+        <button onclick="processFile()">Upload and Display Links</button>
+        <button onclick="clearLinks()">Clear All Links</button>
+        <button onclick="closeAllTabs()">Close All Tabs</button>
+        <button onclick="openLinksOneByOne()">Open Links One by One</button>
+
+        <div id="counter">Links left: 0</div> <!-- Counter added here -->
+        <div id="linkContainer"></div>
+    </div>
+
+    <script>
+        // Array to keep track of opened tabs
+        let openedTabs = [];
+        let storedLinks = []; // To store links temporarily for later use
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLinks();
+        });
+
+        function processFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const fileContent = event.target.result;
+                    const links = fileContent.split(/\r?\n/);  // Split by new line
+                    const linkContainer = document.getElementById('linkContainer');
+                    linkContainer.innerHTML = ""; // Clear any existing content
+
+                    // Store links in localStorage
+                    let localStoredLinks = JSON.parse(localStorage.getItem('links')) || [];
+
+                    links.forEach(link => {
+                        if (link.trim() !== "") {  // Check if line is not empty
+                            const trimmedLink = link.trim();
+                            if (!localStoredLinks.includes(trimmedLink)) {
+                                localStoredLinks.push(trimmedLink);
+                            }
+                        }
+                    });
+
+                    // Save updated links to localStorage
+                    localStorage.setItem('links', JSON.stringify(localStoredLinks));
+                    storedLinks = localStoredLinks; // Update the links to be used later
+
+                    // Render links from localStorage
+                    renderLinks();
+                };
+                
+                reader.readAsText(file);
+            } else {
+                alert("Please select a file first.");
+            }
+        }
+
+        function renderLinks() {
+            const linkContainer = document.getElementById('linkContainer');
+            linkContainer.innerHTML = ""; // Clear any existing content
+            const links = storedLinks || [];
+
+            links.forEach(link => {
+                if (link.trim() !== "") {
+                    const anchor = document.createElement('a');
+                    anchor.href = link.trim();
+                    anchor.target = "_blank";
+                    anchor.rel = "noopener noreferrer";  // Prevent focus shift to the new tab
+                    anchor.textContent = link.trim();
+                    
+                    linkContainer.appendChild(anchor);
+                }
+            });
+
+            // Update the counter
+            updateCounter();
+        }
+
+        function openLinksOneByOne() {
+            const numberOfLinksToOpen = 10;
+            let delay = 5000; // Delay in milliseconds
+
+            // Function to open a link with a delay
+            function openLinkWithDelay(link, index) {
+                setTimeout(() => {
+                    const newTab = window.open(link, '_blank');  // Open link in a new tab
+                    if (newTab) { // Ensure the tab was opened successfully
+                        openedTabs.push(newTab);  // Track the opened tab
+                    }
+
+                    // Remove the link from storedLinks after it has been opened
+                    removeLink(link);
+                }, delay * index); // Increment delay for each link
+            }
+
+            storedLinks.slice(0, numberOfLinksToOpen).forEach((link, index) => {
+                if (link.trim() !== "") {
+                    openLinkWithDelay(link.trim(), index);
+                }
+            });
+        }
+
+        function removeLink(link) {
+            storedLinks = storedLinks.filter(l => l !== link);
+            localStorage.setItem('links', JSON.stringify(storedLinks));
+            renderLinks(); // Refresh the displayed links
+        }
+
+        function loadLinks() {
+            storedLinks = JSON.parse(localStorage.getItem('links')) || [];
+            renderLinks();
+        }
+
+        function clearLinks() {
+            localStorage.removeItem('links');
+            storedLinks = [];
+            renderLinks(); // Refresh the display to show no links
+        }
+
+        function closeAllTabs() {
+            openedTabs.forEach(tab => {
+                if (tab && !tab.closed) {
+                    tab.close();
+                }
+            });
+            // Clear the list of opened tabs
+            openedTabs = [];
+        }
+
+        // Function to update the counter
+        function updateCounter() {
+            const counter = document.getElementById('counter');
+            const linksLeft = storedLinks.length;
+            counter.textContent = `Links left: ${linksLeft}`;
+        }
+    </script>
+</body>
+</html>

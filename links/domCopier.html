@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domain Copier</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        color: #ffffff;
+        background-color: rgb(5, 0, 31);
+    }
+    .domain-list {
+        list-style: none;
+        padding: 0;
+    }
+    .domain-list li {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+    .domain-list li:hover {
+        font-weight: bold;
+        color: #00ffff;
+        background-color: #595a00;
+    }
+    .copy-icon, .link-icon {
+        cursor: pointer;
+        padding: 5px 10px;
+        margin-left: 10px;
+        background-color: rgb(25, 0, 255);
+        border-radius: 3px;
+        user-select: none;
+    }
+    .notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #ff0303;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        display: none;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .notification.show {
+        display: block;
+    }
+    .domain-text {
+        flex: 1;
+    }
+    .controls {
+        margin: 10px 0;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    button {
+        padding: 6px 12px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .counter {
+        font-weight: bold;
+        color: #00ffcc;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Copy and Remove Domain</h1>
+
+<div class="controls">
+    <input type="file" id="fileInput" accept=".txt">
+    <button id="undoBtn">↩ Undo Last</button>
+    <span class="counter">Remaining: <span id="count">0</span></span>
+</div>
+
+<ul id="domainList" class="domain-list"></ul>
+
+<div id="notification" class="notification"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const domainList = document.getElementById('domainList');
+    const fileInput = document.getElementById('fileInput');
+    const notification = document.getElementById('notification');
+    const undoBtn = document.getElementById('undoBtn');
+    const countEl = document.getElementById('count');
+
+    const TAB_NAME = 'securitytrails_tab';
+
+    let history = JSON.parse(localStorage.getItem('history')) || [];
+
+    /* ---------- Helpers ---------- */
+
+    function updateCount() {
+        countEl.textContent = domainList.children.length;
+    }
+
+    function showNotification(msg) {
+        notification.textContent = msg;
+        notification.classList.add('show');
+        setTimeout(() => notification.classList.remove('show'), 1200);
+    }
+
+    function saveDomains() {
+        const domains = [...domainList.querySelectorAll('.domain-text')]
+            .map(e => e.textContent.trim());
+        localStorage.setItem('domains', JSON.stringify(domains));
+        updateCount();
+    }
+
+    function saveHistory() {
+        localStorage.setItem('history', JSON.stringify(history));
+    }
+
+    function addDomain(domain, toTop = false) {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span class="domain-text">${domain}</span>
+            <span class="link-icon">🔗</span>
+            <span class="copy-icon">📋</span>
+        `;
+        toTop ? domainList.prepend(li) : domainList.appendChild(li);
+        updateCount();
+    }
+
+    function removeFirstDomain(reason) {
+        const first = domainList.querySelector('li');
+        if (!first) return;
+
+        const domain = first.querySelector('.domain-text').textContent.trim();
+        history.push(domain);
+        saveHistory();
+
+        first.remove();
+        saveDomains();
+        showNotification(`${reason}: ${domain}`);
+    }
+
+    /* ---------- Load ---------- */
+
+    function loadDomains() {
+        const stored = JSON.parse(localStorage.getItem('domains')) || [];
+        domainList.innerHTML = '';
+        stored.forEach(addDomain);
+        updateCount();
+    }
+
+    loadDomains();
+
+    /* ---------- File Upload ---------- */
+
+    fileInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const domains = ev.target.result
+                .split('\n')
+                .map(d => d.trim())
+                .filter(Boolean);
+
+            domainList.innerHTML = '';
+            domains.forEach(addDomain);
+            saveDomains();
+        };
+        reader.readAsText(file);
+    });
+
+    /* ---------- Undo ---------- */
+
+    undoBtn.addEventListener('click', () => {
+        if (!history.length) return;
+        const domain = history.pop();
+        saveHistory();
+        addDomain(domain, true);
+        saveDomains();
+        showNotification(`Restored: ${domain}`);
+    });
+
+    /* ---------- Click Handling ---------- */
+
+    domainList.addEventListener('mousedown', e => {
+        const first = domainList.querySelector('li');
+        if (!first || e.target.parentNode !== first) return;
+
+        const domain = first.querySelector('.domain-text').textContent.trim();
+
+        // COPY
+        if (e.target.classList.contains('copy-icon') && e.button === 0) {
+            navigator.clipboard.writeText(domain);
+            removeFirstDomain('Copied');
+        }
+
+        // LINK
+        if (e.target.classList.contains('link-icon')) {
+            const url = 'https://securitytrails.com/list/ip/' + encodeURIComponent(domain);
+
+            // Middle click → open only
+            if (e.button === 1) {
+                window.open(url, TAB_NAME);
+                showNotification(`Opened (kept): ${domain}`);
+                return;
+            }
+
+            // Left click → open + remove
+            if (e.button === 0) {
+                window.open(url, TAB_NAME);
+                removeFirstDomain('Opened');
+            }
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Links and Tabs</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #000000;
+        color: #000000;
+      }
+      h1 {
+        text-align: center;
+        padding: 20px;
+        background-color: #065e1c;
+        color: white;
+        margin: 40px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: rgb(199, 188, 166);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+      input[type="file"] {
+        display: block;
+        margin: 0 auto 10px;
+      }
+      button {
+        background-color: #0d3158;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #5094dd;
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      #linkContainer {
+        margin-top: 10px;
+      }
+      #linkContainer a {
+        display: flex;
+        color: #0000009c;
+        text-decoration: none;
+        padding: 8px;
+        border: 1px solid #1100ff;
+        background-color: #ffffff;
+        border-radius: 1px;
+        margin-bottom: 1px;
+        transition: background-color 0.3s;
+      }
+      #linkContainer a:hover {
+        background-color: #0d3158;
+        color: #ccc;
+      }
+      #counter {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 18px;
+        color: #ff5100;
+      }
+      #statusAlert {
+        text-align: center;
+        color: #ff5100;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Upload a TXT File with Links</h1>
+
+      <input type="file" id="fileInput" accept=".txt" />
+      <button onclick="processFile()">Upload and Display Links</button>
+      <button onclick="clearLinks()">Clear All Links</button>
+      <button onclick="recallLast15()">Recall Last 15 URLs</button>
+      <button onclick="openURLs()">Open 15 URLs</button>
+
+      <div id="counter">Links left: 0</div>
+      <div id="linkContainer"></div>
+      <div id="statusAlert"></div>
+      <!-- Status alert for URL loading progress -->
+    </div>
+
+    <script>
+      let openedTabs = [];
+      let storedLinks = [];
+      let urls = [];
+      let currentURLIndex = 0;
+      let historyURLs = []; // Array to store the last 10 opened URLs
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadLinks();
+        loadHistory(); // Load any stored history on page load
+      });
+
+      function processFile() {
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const fileContent = event.target.result;
+            const links = fileContent.split(/\r?\n/);
+            let localStoredLinks =
+              JSON.parse(localStorage.getItem("links")) || [];
+
+            links.forEach((link) => {
+              if (
+                link.trim() !== "" &&
+                !localStoredLinks.includes(link.trim())
+              ) {
+                localStoredLinks.push(link.trim());
+              }
+            });
+
+            localStorage.setItem("links", JSON.stringify(localStoredLinks));
+            storedLinks = localStoredLinks;
+            renderLinks();
+          };
+          reader.readAsText(file);
+        } else {
+          alert("Please select a file first.");
+        }
+      }
+
+      function renderLinks() {
+        const linkContainer = document.getElementById("linkContainer");
+        linkContainer.innerHTML = "";
+        const links = storedLinks || [];
+
+        links.forEach((link) => {
+          if (link.trim() !== "") {
+            const anchor = document.createElement("a");
+            anchor.href = link.trim();
+            anchor.target = "_blank";
+            anchor.rel = "noopener noreferrer";
+            anchor.textContent = link.trim();
+            linkContainer.appendChild(anchor);
+          }
+        });
+        updateCounter();
+      }
+
+      function openURLs() {
+        urls = storedLinks.slice(0, 15); // Limit to the first 10 URLs
+        const newTab = window.open("", "_blank");
+        currentURLIndex = 0;
+
+        if (urls.length === 0) {
+          alert("No URLs found - please upload links first.");
+          return;
+        }
+
+        saveHistory(urls); // Save the current 10 URLs to history
+        document.getElementById(
+          "statusAlert"
+        ).textContent = `Loading ${urls.length} URLs...`;
+        loadNextURL(newTab);
+      }
+
+      async function loadNextURL(tab) {
+        if (currentURLIndex < urls.length) {
+          const url = urls[currentURLIndex].trim();
+          document.getElementById("statusAlert").textContent = `Loading URL ${
+            currentURLIndex + 1
+          } of ${urls.length}`;
+
+          try {
+            // Open the URL in the tab
+            tab.location.href = url;
+
+            // Wait for a short duration after opening the URL
+            await new Promise((res) => setTimeout(res, 600));
+
+            // Wait for an additional duration before loading the next URL
+            await new Promise((res) => setTimeout(res, 2000));
+
+            // Remove the opened URL from the list
+            removeLink(url);
+            currentURLIndex++;
+
+            // Load the next URL
+            loadNextURL(tab);
+          } catch (error) {
+            console.error(`Error loading URL ${url}:`, error);
+            // Optionally continue loading the next URL even if one fails
+            currentURLIndex++;
+            loadNextURL(tab);
+          }
+        } else {
+          document.getElementById(
+            "statusAlert"
+          ).textContent = `Finished loading ${urls.length} URLs.`;
+
+          // Close the tab after a slight delay to ensure all processes are complete
+          await new Promise((res) => setTimeout(res, 600)); // Adjust the delay if necessary
+          tab.close(); // Close the tab after the last URL is loaded
+        }
+      }
+
+      function removeLink(link) {
+        storedLinks = storedLinks.filter((l) => l !== link);
+        localStorage.setItem("links", JSON.stringify(storedLinks));
+        renderLinks(); // Refresh the displayed links
+      }
+
+      function loadLinks() {
+        storedLinks = JSON.parse(localStorage.getItem("links")) || [];
+        renderLinks();
+      }
+
+      function clearLinks() {
+        localStorage.removeItem("links");
+        storedLinks = [];
+        renderLinks();
+      }
+
+      function updateCounter() {
+        const counter = document.getElementById("counter");
+        const linksLeft = storedLinks.length;
+        counter.textContent = `Links left: ${linksLeft}`;
+      }
+
+      function saveHistory(urls) {
+        historyURLs = urls;
+        localStorage.setItem("history", JSON.stringify(historyURLs));
+      }
+
+      function loadHistory() {
+        historyURLs = JSON.parse(localStorage.getItem("history")) || [];
+      }
+
+      function recallLast15() {
+        if (historyURLs.length > 0) {
+          storedLinks = [...historyURLs, ...storedLinks];
+          localStorage.setItem("links", JSON.stringify(storedLinks));
+          renderLinks();
+          document.getElementById("statusAlert").textContent =
+            "Last 15 URLs recalled!";
+        } else {
+          alert("No history to recall!");
+        }
+      }
+    </script>
+  </body>
+</html>

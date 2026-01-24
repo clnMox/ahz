@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Links Website</title>
+
+    <style>
+      :root {
+        --bg-main: #1a0000;
+        --bg-card: rgba(20, 0, 204, 0.85);
+        --bg-card-hover: #ff0033;
+        --bg-footer: #020731;
+
+        --accent: #ffbc04;
+        --accent-soft: #00ffcc;
+        --text-main: #ffffff;
+        --text-muted: #cccccc;
+
+        --radius-lg: 16px;
+        --radius-md: 12px;
+
+        --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.35);
+        --shadow-strong: 0 12px 35px rgba(0, 0, 0, 0.55);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        background: radial-gradient(circle at top, #2e0000, #0e0000);
+        color: var(--text-main);
+        margin: 0;
+        padding-bottom: 120px;
+        text-align: center;
+      }
+
+      /* ------------------ HEADER ------------------ */
+
+      h1 {
+        margin: 24px 0 10px;
+        font-size: clamp(1.8rem, 4vw, 2.4rem);
+        letter-spacing: 1px;
+      }
+
+      /* ------------------ LINK GRID ------------------ */
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 20px auto 50px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 22px;
+        max-width: 1000px;
+      }
+
+      li {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(0, 0, 0, 0.3)
+        );
+        backdrop-filter: blur(8px);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-soft);
+        transition:
+          transform 0.35s ease,
+          box-shadow 0.35s ease,
+          background-color 0.35s ease;
+      }
+
+      li:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: var(--shadow-strong);
+        background-color: var(--bg-card-hover);
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--text-main);
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 18px 14px;
+      }
+
+      /* ------------------ ICONS ------------------ */
+
+      img {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+        background: #ffffff;
+        border-radius: 50%;
+        padding: 10px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s ease;
+      }
+
+      li:hover img {
+        transform: rotate(-4deg) scale(1.05);
+      }
+
+      span {
+        font-size: 16px;
+        letter-spacing: 0.3px;
+        transition: color 0.25s ease;
+      }
+
+      li:hover span {
+        color: #ffd000;
+      }
+
+      /* ------------------ QUERY BOX ------------------ */
+
+      .query-box {
+        max-width: 1100px;
+        margin: 30px auto 0;
+        background: linear-gradient(
+          145deg,
+          rgba(15, 15, 15, 0.9),
+          rgba(0, 0, 0, 0.9)
+        );
+        border: 1px solid var(--accent);
+        border-radius: var(--radius-lg);
+        padding: 18px 20px;
+        text-align: left;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .query-box h2 {
+        color: var(--accent);
+        font-size: 18px;
+        margin-bottom: 12px;
+        text-align: center;
+        letter-spacing: 0.5px;
+      }
+
+      .query-box pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        font-size: 13px;
+        color: var(--accent-soft);
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      /* ------------------ FOOTER ------------------ */
+
+      footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: linear-gradient(
+          180deg,
+          rgba(2, 7, 49, 0.95),
+          rgba(2, 7, 49, 1)
+        );
+        backdrop-filter: blur(10px);
+        padding: 14px 18px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        z-index: 100;
+        box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.5);
+      }
+
+      footer a {
+        color: var(--text-main);
+        font-weight: 600;
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: var(--radius-md);
+        transition:
+          background-color 0.25s ease,
+          color 0.25s ease;
+      }
+
+      footer a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #02eeff;
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-muted);
+        opacity: 0.85;
+      }
+
+      /* ------------------ MOBILE TWEAKS ------------------ */
+
+      @media (max-width: 480px) {
+        img {
+          width: 64px;
+          height: 64px;
+        }
+
+        span {
+          font-size: 15px;
+        }
+
+        footer {
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Links</h1>
+
+    <ul>
+      <li>
+        <a href="https://whoer.net/?host" target="_blank"
+          ><img src="https://whoer.net/favicon.png" /><span>Whoer</span></a
+        >
+      </li>
+      <li>
+        <a href="https://web.telegram.org/a/" target="_blank"
+          ><img src="https://web.telegram.org/a/icon-192x192.png" /><span
+            >Telegram</span
+          ></a
+        >
+      </li>
+      <li>
+        <a href="https://ips.osnova.news/ip/196.202.208.7/" target="_blank"
+          ><img src="https://ips.osnova.news/favicon.png" /><span
+            >ips.osnova</span
+          ></a
+        >
+      </li>
+      <li>
+        <a href="https://whatismyipaddress.com" target="_blank"
+          ><img
+            src="https://whatismyipaddress.com/wp-content/themes/wipa-bb-child/src/images/main-logo.png"
+          /><span>WhatIsMyIP</span></a
+        >
+      </li>
+      <li>
+        <a href="https://whatsmydns.me" target="_blank"
+          ><img
+            src="https://whatsmydns.me/images/general/favicon-32.png"
+          /><span>WhatsMyDNS</span></a
+        >
+      </li>
+      <li>
+        <a href="https://www.virustotal.com" target="_blank"
+          ><img
+            src="https://www.virustotal.com/gui/images/manifest/icon-72x72.png"
+          /><span>VirusTotal</span></a
+        >
+      </li>
+      <li>
+        <a href="https://bgp.tools/as/33771" target="_blank"
+          ><img src="https://bgp.tools/apple-touch-icon.png" /><span
+            >BGP Tools</span
+          ></a
+        >
+      </li>
+      <li>
+        <a href="https://check-host.net" target="_blank"
+          ><img src="https://check-host.net/images/mainlogo.png" /><span
+            >Check Host</span
+          ></a
+        >
+      </li>
+      <li>
+        <a href="https://www.feitsui.com/en/article/3" target="_blank">
+          <img
+            src="https://cf.feitsui.com/icon/120x120.png"
+            alt="Edge Locations"
+          />
+          <span>Edge Locations</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://bgp.tools/as/33771#prefixes" target="_blank">
+          <img
+            src="https://bgp.tools/apple-touch-icon.png"
+            alt="BGP Tools ASN"
+          />
+          <span>BGP Tools ASN</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://bestwebsiterank.com/domains/.ke/" target="_blank">
+          <img
+            src="https://bestwebsiterank.com/favicon.ico"
+            alt="Best Website Rank"
+          />
+          <span>BestWebsiteRank</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://hackkcah.com/?u=1" target="_blank">
+          <img
+            src="https://hackkcah.com/images/logos/logosite.png"
+            alt="Hackkcah"
+          />
+          <span>Hackkcah</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://check-host.net/?lang=en" target="_blank">
+          <img
+            src="https://check-host.net/images/mainlogo.png"
+            alt="Check Host"
+          />
+          <span>Check Host</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://www.color-hex.com/color/15242d" target="_blank">
+          <img src="https://www.color-hex.com/logo.png" alt="Color Hex" />
+          <span>Color Hex</span>
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="http://ports.my-addr.com/check-all-open-ports-online.php"
+          target="_blank"
+        >
+          <img
+            src="http://ports.my-addr.com/img/ports_icon.png"
+            alt="Port Scanner"
+          />
+          <span>Port Scanner</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://codebeautify.org/base32-decode" target="_blank">
+          <img src="https://codebeautify.org/img/cb.png" alt="Decode Tools" />
+          <span>Decode Tools</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://scamalytics.com/ip/51.38.64.29" target="_blank">
+          <img
+            src="https://scamalytics.com/wp-content/uploads/2016/06/icon_128.png"
+            alt="Scamalytics"
+          />
+          <span>Scamalytics IP Risk</span>
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="https://www.google.com/search?q=connect+%5Bhost_port%5D%40www.whatsapp.com"
+          target="_blank"
+        >
+          <img src="https://github.com/fluidicon.png" alt="Payloads" />
+          <span>Payloads</span>
+        </a>
+      </li>
+    </ul>
+
+    <section class="query-box">
+      <h2>Censys / Search Query</h2>
+      <pre>
+services.tls.versions.tls_version=TLSv1_3
+services.tls.certificate.parsed.subject.country=ke
+awsglobalaccelerator.com
+location.country=Kenya
+services.http.response.headers: (key: "Server" and value.headers: "awselb/2.0")
+and services.software.vendor=Apache
+services.http.response.headers: (key: "Server" and value.headers: "awselb/2.0")
+and services.software.vendor: {nginx, Apache}
+services.tls.certificate.parsed.subject.country=ke
+((services.http.response.headers: (key: Server and value.headers: AmazonS3))
+and services.software.product=CloudFront Load Balancer
+and services.software.product=S3)
+and ip: 127.255.255.255/1
+and services.tls.certificates.leaf_data.issuer.common_name="Amazon RSA 2048 M02"*
+  </pre
+      >
+    </section>
+
+    <footer>
+      <a
+        href="links/domCopier.html"
+        >copyDOM</a
+      >
+      <a
+        href="file:///C:/Users/aQc/Desktop/BugHost/Script/Strails/html/copy30urls.html"
+        >copy30urls</a
+      >
+      <a
+        href="file:///C:/Users/aQc/Desktop/BugHost/Script/Strails/html/openlinks.html"
+        >openlinks</a
+      >
+      <a
+        href="file:///C:/Users/aQc/Desktop/BugHost/Script/Strails/html/openlinksCurrentab.html"
+        >openlinksCurrentab</a
+      >
+      <a
+        href="file:///C:/Users/aQc/Desktop/BugHost/Script/cencys/cen_Html/multi_tab_url_opener.html"
+        >checkLimit</a
+      >
+      <a
+        href="file:///C:/Users/aQc/Desktop/BugHost/Script/cencys/cen_Html/cenEdit.html"
+        >ManualConstruct</a
+      >
+      <a
+        href="file:///C:/Users/aQc/Desktop/BugHost/Script/cencys/cen_Html/cfrontNode.html"
+        >cfrontNode</a
+      >
+      <a
+        href="file:///C:/Users/aQc/Desktop/BugHost/Script/cencys/cen_Html/censearchDATE.html"
+        >Date</a
+      >
+      <a
+        href="links/cenAESamazon.html"
+        >UrlConstruct</a
+      >
+      <p>&copy; 2024 ibraqem254. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

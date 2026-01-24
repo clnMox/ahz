@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Copy URLs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(7, 12, 36);
+            color: #ccc;
+            font-weight: 400;
+        }
+        #urlList {
+            margin-top: 10px;
+            margin-right: 600px;
+            color: rgb(10, 214, 214);
+            background-color: rgb(29, 1, 1);
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        #copyButton {
+            position: inherit;
+            margin-top: 10px;
+            background-color: rgb(0, 174, 255);
+            border: 2px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+        }
+        #urlCount {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #fileInput {
+            background-color: rgb(9, 8, 82);
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Upload URLs from .txt File</h2>
+
+<input type="file" id="fileInput" accept=".txt"><br>
+<div id="urlCount">Remaining URLs: 0</div>
+<div id="urlList"></div>
+<button id="copyButton" onclick="copyUrls()">Copy 30 URLs</button>
+
+<script>
+    let urls = [];
+
+    // Load URLs from localStorage if they exist
+    window.onload = function() {
+        const savedUrls = localStorage.getItem('urls');
+        if (savedUrls) {
+            urls = JSON.parse(savedUrls);
+            displayUrls(urls);
+        }
+    };
+
+    // Handle file upload and display URLs
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                urls = content.split('\n').filter(url => url.trim() !== '');
+                saveToLocalStorage();
+                displayUrls(urls);
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    // Display URLs in the list and update count
+    function displayUrls(urls) {
+        const urlList = document.getElementById('urlList');
+        const urlCount = document.getElementById('urlCount');
+        urlList.innerHTML = '';
+        urls.forEach((url, index) => {
+            const p = document.createElement('p');
+            p.textContent = `${index + 1}. ${url}`;
+            urlList.appendChild(p);
+        });
+        urlCount.textContent = `Remaining URLs: ${urls.length}`;
+        document.getElementById('copyButton').style.display = urls.length > 0 ? 'block' : 'none';
+    }
+
+    // Save the current URL list to localStorage
+    function saveToLocalStorage() {
+        localStorage.setItem('urls', JSON.stringify(urls));
+    }
+
+    // Copy the first 30 URLs and remove them from the list
+    function copyUrls() {
+        const urlsToCopy = urls.slice(0, 30).join('\n');
+        if (urlsToCopy.length > 0) {
+            navigator.clipboard.writeText(urlsToCopy).then(() => {
+                alert('First 30 URLs copied to clipboard');
+                // Remove the copied URLs from the list
+                urls = urls.slice(30);
+                saveToLocalStorage(); // Save the updated list to localStorage
+                displayUrls(urls);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        } else {
+            alert('No URLs to copy');
+        }
+    }
+</script>
+
+</body>
+</html>

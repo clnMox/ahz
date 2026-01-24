@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Node Calculator</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"
+    />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 20px;
+        padding: 20px;
+        transition: background-color 0.3s, color 0.3s;
+        background-color: #000;
+        color: #fff;
+      }
+
+      h1 {
+        color: #ca6f1e;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      input,
+      button,
+      textarea,
+      select {
+        margin-bottom: 16px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #result {
+        margin-top: 16px;
+      }
+
+      textarea {
+        resize: none;
+      }
+    </style>
+    <script>
+      function calculateIPRange() {
+        const ipAddress = document.getElementById("ipAddress").value;
+        const subnet = parseInt(document.getElementById("subnet").value);
+        const vhost = document.getElementById("vhost").value;
+        const node = document.getElementById("node").value;
+
+        // IP range calculation
+        const result = calculateIPRangeFunction(ipAddress, subnet);
+
+        // Display the result
+        document.getElementById(
+          "result"
+        ).innerHTML = `Start IP: ${result.start}<br>End IP: ${result.end}`;
+
+        // Construct the URL
+        const endIP = result.end;
+        const url = `https://search.censys.io/search/report?resource=hosts&q=%28ip%3A+%60${endIP}%2F${subnet}%60%29+and+.${node}.r.cloudfront.net&virtual_hosts=${vhost}&field=ip&num_buckets=1000`;
+        document.getElementById("url").value = url;
+
+        // Save to localStorage
+        localStorage.setItem("ipAddress", ipAddress);
+        localStorage.setItem("subnet", subnet);
+        localStorage.setItem("result", JSON.stringify(result));
+        localStorage.setItem("url", url);
+        localStorage.setItem("node", node);
+      }
+
+      let openedTab;
+
+      function openURL() {
+        const url = document.getElementById("url").value;
+
+        if (openedTab) {
+          openedTab.close();
+        }
+
+        openedTab = window.open(url, "_blank");
+      }
+
+      function incrementIPAddress() {
+        const ipAddressInput = document.getElementById("ipAddress");
+        const currentIPAddress = ipAddressInput.value;
+
+        const ipParts = currentIPAddress.split(".");
+        ipParts[2] = (parseInt(ipParts[2]) + 8).toString();
+        const newIPAddress = ipParts.join(".");
+
+        ipAddressInput.value = newIPAddress;
+
+        localStorage.setItem("ipAddress", newIPAddress);
+      }
+
+      function calculateIPRangeFunction(ip, subnet) {
+        const ipOctets = ip.split(".");
+        const networkAddress = ipOctets
+          .map((octet, index) => {
+            if (index < Math.floor(subnet / 8)) {
+              return octet;
+            } else if (index === Math.floor(subnet / 8)) {
+              const remainingBits = subnet % 8;
+              const subnetMask = 256 - Math.pow(2, 8 - remainingBits);
+              return octet & subnetMask;
+            } else {
+              return 0;
+            }
+          })
+          .join(".");
+        const broadcastAddress = ipOctets
+          .map((octet, index) => {
+            if (index < Math.floor(subnet / 8)) {
+              return octet;
+            } else if (index === Math.floor(subnet / 8)) {
+              const remainingBits = subnet % 8;
+              const subnetMask = 256 - Math.pow(2, 8 - remainingBits);
+              return (octet & subnetMask) + Math.pow(2, 8 - remainingBits) - 1;
+            } else {
+              return 255;
+            }
+          })
+          .join(".");
+        return { start: networkAddress, end: broadcastAddress };
+      }
+
+      window.onload = function () {
+        const savedIPAddress = localStorage.getItem("ipAddress");
+        const savedSubnet = localStorage.getItem("subnet");
+        const savedResult = localStorage.getItem("result");
+        const savedURL = localStorage.getItem("url");
+        const savedNode = localStorage.getItem("node");
+
+        if (savedIPAddress) {
+          document.getElementById("ipAddress").value = savedIPAddress;
+        }
+
+        if (savedSubnet) {
+          document.getElementById("subnet").value = savedSubnet;
+        }
+
+        if (savedResult) {
+          const result = JSON.parse(savedResult);
+          document.getElementById(
+            "result"
+          ).innerHTML = `Start IP: ${result.start}<br>End IP: ${result.end}`;
+        }
+
+        if (savedURL) {
+          document.getElementById("url").value = savedURL;
+        }
+
+        if (savedNode) {
+          document.getElementById("node").value = savedNode;
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Censys URL Constructor</h1>
+
+    <label for="ipAddress">IP Address:</label>
+    <input type="text" id="ipAddress" placeholder="Enter IP address" />
+
+    <button onclick="incrementIPAddress()">Increment IP</button>
+
+    <label for="subnet">Subnet:</label>
+    <input type="number" id="subnet" placeholder="Enter subnet" />
+
+    <label for="vhost">Virtual Hosts:</label>
+    <select id="vhost">
+      <option value="ONLY" selected>ONLY</option>
+      <option value="EXCLUDE">EXCLUDE</option>
+      <option value="INCLUDE">INCLUDE</option>
+    </select>
+
+    <label for="node">Node:</label>
+    <select id="node">
+      <option value="lhr62" selected>LHR62</option>
+      <option value="lhr3">LHR3</option>
+      <option value="lhr5">LHR5</option>
+      <option value="lhr50">LHR50</option>
+      <option value="lhr61">LHR61</option>
+      <option value="ord50">ORD50</option>
+      <option value="ord51">ORD51</option>
+      <option value="ord52">ORD52</option>
+      <option value="ord53">ORD53</option>
+      <option value="ord56">ORD56</option>
+      <option value="ord58">ORD58</option>
+    </select>
+
+    <button onclick="calculateIPRange()">Calculate</button>
+
+    <div id="result"></div>
+
+    <label for="url">Constructed URL:</label>
+    <textarea id="url" rows="4" cols="50" readonly></textarea>
+
+    <button onclick="openURL()">Open URL</button>
+  </body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Censys URL Customizer</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"
+    />
+    <style>
+      body {
+        background-color: #000;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      h1 {
+        color: #ca6f1e;
+      }
+      input,
+      select,
+      textarea,
+      button {
+        padding: 5px;
+        margin: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      textarea {
+        width: 100%;
+        resize: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Censys URL Customizer</h1>
+
+    <label for="baseUrl">Paste Base URL: as ip:[0.0.0.0 to 255.255.255.255]</label>
+    <textarea id="baseUrl" rows="3">
+https://search.censys.io/search/report?resource=hosts&q=.elb.amazonaws.com+and+location.country%3DSouth+Africa+and+ip%3A[13.240.0.0+to+13.245.155.255]&virtual_hosts=ONLY&field=name&num_buckets=1000</textarea
+    >
+
+    <div class="row">
+      <label><input type="checkbox" id="includeAsn" checked /> ASN:</label>
+      <select id="asn">
+        <option value="54113">Fastly</option>
+        <option value="15169">Google</option>
+        <option value="199524">Gcore</option>
+        <option value="202422">Gcore-1</option>
+        <option value="ONLY" selected>ONLY</option>
+      </select>
+
+      <label><input type="checkbox" id="includeStatus" checked /> Status:</label>
+      <select id="status">
+        <option value="404">404</option>
+        <option value="403">403</option>
+        <option value="200">200</option>
+      </select>
+
+      <label><input type="checkbox" id="includeVH" checked /> Virtual Hosts:</label>
+      <select id="vhost">
+        <option value="INCLUDE">INCLUDE</option>
+        <option value="EXCLUDE">EXCLUDE</option>
+        <option value="ONLY" selected>ONLY</option>
+      </select>
+
+      <label><input type="checkbox" id="includeField" checked /> Field:</label>
+      <select id="field">
+        <option value="ip" selected>IP</option>
+        <option value="name">NAME</option>
+      </select>
+
+      <label><input type="checkbox" id="includeQuery" checked /> Ext:</label>
+      <select id="tld">
+        <option value=".ke">.ke</option>
+        <option value="ac.ke">ac.ke</option>
+        <option value="sc.ke">sc.ke</option>
+        <option value="or.ke">or.ke</option>
+        <option value="go.ke">go.ke</option>
+        <option value="io.ke">io.ke</option>
+        <option value="kenya">kenya</option>
+        <option value="co.za">co.za</option>
+        <option value="co.ke" selected>co.ke</option>
+      </select>
+    </div>
+
+    <button onclick="toggleManual()">Switch to Manual IP Input</button>
+
+    <div id="manualInputs">
+      <label>Start IP:</label>
+      <input type="text" id="manualStartIP" placeholder="e.g. 1.1.1.1" />
+      <label>End IP:</label>
+      <input type="text" id="manualEndIP" placeholder="e.g. 1.1.1.255" />
+    </div>
+
+    <div id="calculatedInputs" style="display: none">
+      <label>IP Address:</label>
+      <input type="text" id="ip" placeholder="e.g. 1.2.3.4" />
+      <label>Subnet:</label>
+      <input type="number" id="subnet" placeholder="e.g. 24" />
+    </div>
+
+    <div class="row">
+      <label for="historySelect">Select Previous Range:</label>
+      <select id="historySelect" onchange="loadFromHistory()">
+        <option value="">--Select--</option>
+      </select>
+    </div>
+
+    <button onclick="incrementIPAddress()">Increment IP</button>
+    <button onclick="constructURL()">Construct URL</button>
+
+    <h3>Calculated IP Range:</h3>
+    <p><strong>Start IP:</strong> <span id="rangeStart">-</span></p>
+    <p><strong>End IP:</strong> <span id="rangeEnd">-</span></p>
+
+    <h3>Final URL:</h3>
+    <textarea id="finalUrl" rows="4" readonly></textarea>
+    <button onclick="openURL()">Open URL</button>
+
+    <script>
+      let isManual = true;
+
+      function toggleManual() {
+        isManual = !isManual;
+        document.getElementById("manualInputs").style.display = isManual
+          ? "block"
+          : "none";
+        document.getElementById("calculatedInputs").style.display = isManual
+          ? "none"
+          : "block";
+      }
+
+      function incrementIPAddress() {
+        const ipAddressInput = document.getElementById("ip");
+        const currentIPAddress = ipAddressInput.value.trim();
+
+        if (!currentIPAddress) return alert("Please enter a valid IP first.");
+
+        const ipParts = currentIPAddress.split(".").map(Number);
+        if (
+          ipParts.length !== 4 ||
+          ipParts.some((n) => isNaN(n) || n < 0 || n > 255)
+        ) {
+          return alert("Invalid IP format.");
+        }
+
+        ipParts[2] = (ipParts[2] + 8) % 256;
+        ipAddressInput.value = ipParts.join(".");
+      }
+
+      function calculateIPRange(ip, subnet) {
+        const parts = ip.split(".").map(Number);
+        const mask = ~(2 ** (32 - subnet) - 1);
+        const ipNum = parts.reduce((acc, p) => (acc << 8) + p, 0);
+        const startNum = ipNum & mask;
+        const endNum = startNum + ~mask;
+
+        const toIP = (num) =>
+          [
+            (num >>> 24) & 255,
+            (num >>> 16) & 255,
+            (num >>> 8) & 255,
+            num & 255,
+          ].join(".");
+        return { startIP: toIP(startNum), endIP: toIP(endNum) };
+      }
+
+      function updateOrAddParam(url, param, value) {
+        const encodedParam = encodeURIComponent(param);
+        const encodedValue = encodeURIComponent(value);
+        const encodedRegex = new RegExp(
+          `(%26|%3F)${encodedParam}%3D[^%&]*`,
+          "i"
+        );
+        const plainRegex = new RegExp(`([?&])${param}=[^&]*`, "i");
+
+        if (encodedRegex.test(url)) {
+          return url.replace(
+            encodedRegex,
+            `$1${encodedParam}%3D${encodedValue}`
+          );
+        } else if (plainRegex.test(url)) {
+          return url.replace(plainRegex, `$1${param}=${value}`);
+        } else {
+          return url + (url.includes("?") ? "&" : "?") + `${param}=${value}`;
+        }
+      }
+
+      function constructURL() {
+        let rawUrl = document.getElementById("baseUrl").value.trim();
+        let startIP = "";
+        let endIP = "";
+
+        if (isManual) {
+          startIP = document.getElementById("manualStartIP").value.trim();
+          endIP = document.getElementById("manualEndIP").value.trim();
+          if (!startIP || !endIP) {
+            alert("Please enter both manual start and end IPs.");
+            return;
+          }
+        } else {
+          const ip = document.getElementById("ip").value.trim();
+          const subnet = parseInt(document.getElementById("subnet").value.trim());
+          if (!ip || isNaN(subnet)) {
+            alert("Please enter a valid IP and subnet.");
+            return;
+          }
+          const range = calculateIPRange(ip, subnet);
+          startIP = range.startIP;
+          endIP = range.endIP;
+        }
+
+        document.getElementById("rangeStart").textContent = startIP;
+        document.getElementById("rangeEnd").textContent = endIP;
+
+        // Save to history
+        let ipHistory = JSON.parse(localStorage.getItem("ipHistory") || "[]");
+        ipHistory.unshift({ startIP, endIP });
+        ipHistory = ipHistory.slice(0, 10);
+        localStorage.setItem("ipHistory", JSON.stringify(ipHistory));
+        updateHistoryDropdown();
+
+        // Replace IP range
+        rawUrl = rawUrl
+          .replace(/ip%3A%5B[\d\.]+\+to\+[\d\.]+%5D/i, `ip%3A%5B${startIP}+to+${endIP}%5D`)
+          .replace(/ip%3A\[[^\]]+\]/i, `ip%3A[${startIP}+to+${endIP}]`)
+          .replace(/ip:\[[^\]]+\]/i, `ip:[${startIP}+to+${endIP}]`);
+
+        // ASN
+        if (document.getElementById("includeAsn").checked) {
+          const asn = document.getElementById("asn").value;
+          rawUrl += `+and+autonomous_system.asn%3A+${asn}`;
+        }
+
+        // Status Code
+        if (document.getElementById("includeStatus").checked) {
+          const status = document.getElementById("status").value;
+          rawUrl += `+and+services.http.response.status_code%3D"${status}"`;
+        }
+
+        // Virtual Hosts
+        if (document.getElementById("includeVH").checked) {
+          const vh = document.getElementById("vhost").value;
+          rawUrl = updateOrAddParam(rawUrl, "virtual_hosts", vh);
+        }
+
+        // TLD filter
+        if (document.getElementById("includeQuery").checked) {
+          const tld = document.getElementById("tld").value;
+          const tlds = [
+            ".ke", "ac.ke", "sc.ke", "or.ke", "go.ke", "io.ke", "kenya", "co.za", "co.ke",
+          ];
+          tlds.forEach((t) => {
+            const regex = new RegExp(`\\+and\\+${t.replace(/\./g, "\\.")}`, "gi");
+            rawUrl = rawUrl.replace(regex, "");
+          });
+          rawUrl = rawUrl.replace(/(q=[^&]*)/, `$1+and+${tld}`);
+        }
+
+        // Field
+        if (document.getElementById("includeField").checked) {
+          const field = document.getElementById("field").value;
+          rawUrl = rawUrl.replace(/([?&]|%26|%3F)field(=|%3D)[^&%]*/gi, "");
+          rawUrl = updateOrAddParam(rawUrl, "field", field);
+        }
+
+        // num_buckets
+        rawUrl = rawUrl.replace(/(&|\?|%26|%3F)num_buckets(=|%3D)\d+/i, "");
+        rawUrl = updateOrAddParam(rawUrl, "num_buckets", "1000");
+
+        document.getElementById("finalUrl").value = rawUrl;
+      }
+
+      function openURL() {
+        const url = document.getElementById("finalUrl").value;
+        if (url) window.open(url, "censysTab");
+      }
+
+      function updateHistoryDropdown() {
+        const historySelect = document.getElementById("historySelect");
+        historySelect.innerHTML = '<option value="">--Select--</option>';
+
+        const ipHistory = JSON.parse(localStorage.getItem("ipHistory") || "[]");
+        ipHistory.forEach((range, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = `${range.startIP} → ${range.endIP}`;
+          historySelect.appendChild(option);
+        });
+      }
+
+      function loadFromHistory() {
+        const historySelect = document.getElementById("historySelect");
+        const selectedIndex = historySelect.value;
+        if (selectedIndex === "") return;
+
+        const ipHistory = JSON.parse(localStorage.getItem("ipHistory") || "[]");
+        const range = ipHistory[selectedIndex];
+
+        if (range) {
+          document.getElementById("manualStartIP").value = range.startIP;
+          document.getElementById("manualEndIP").value = range.endIP;
+          document.getElementById("rangeStart").textContent = range.startIP;
+          document.getElementById("rangeEnd").textContent = range.endIP;
+        }
+      }
+
+      // Load saved history on page load
+      window.addEventListener("load", () => {
+        updateHistoryDropdown();
+
+        const savedStartIP = localStorage.getItem("lastStartIP");
+        const savedEndIP = localStorage.getItem("lastEndIP");
+
+        if (savedStartIP) document.getElementById("manualStartIP").value = savedStartIP;
+        if (savedEndIP) document.getElementById("manualEndIP").value = savedEndIP;
+      });
+    </script>
+  </body>
+</html>
