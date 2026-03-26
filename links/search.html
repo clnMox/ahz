@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Strict Domain & IP Search</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      padding: 20px;
+      margin: 0;
+      background-color: darkblue;
+    }
+
+    h2 {
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    input[type="file"], input[type="text"], select {
+      display: block;
+      width: 100%;
+      margin: 10px 0 20px;
+      padding: 10px;
+      font-size: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: cyan;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+
+    .results {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 20px;
+      background: #f1f1f1;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: monospace;
+    }
+
+    .highlight {
+      background: #ffeaa7;
+      color: #d63031;
+      font-weight: bold;
+    }
+
+    .status {
+      font-size: 14px;
+      color: #888;
+      margin-top: -10px;
+      margin-bottom: 20px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #aaa;
+      font-size: 14px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Strict Domain & IP Search Tool</h2>
+
+  <input type="file" id="fileInput" accept=".txt">
+  <input type="text" id="searchInput" placeholder="Type a keyword e.g. dha or 192.168">
+  <select id="tldFilter">
+    <option value="">-- Optional TLD Filter --</option>
+    <option value=".com">.com</option>
+    <option value=".net">.net</option>
+    <option value=".org">.org</option>
+    <option value=".co.ke">.co.ke</option>
+  </select>
+
+  <div id="results" class="results">Load a .txt file with domains or IPs to begin...</div>
+</div>
+
+<script>
+  let domains = [];
+  const batchSize = 1000;
+
+  document.getElementById('fileInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      domains = e.target.result.split(/\r?\n/).filter(d => d.trim().length > 0);
+      document.getElementById('results').textContent = `Loaded ${domains.length} entries. Now type a search query.`;
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('searchInput').addEventListener('input', runSearch);
+  document.getElementById('tldFilter').addEventListener('change', runSearch);
+
+  function runSearch() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    const tld = document.getElementById('tldFilter').value;
+    const resultDiv = document.getElementById('results');
+    resultDiv.innerHTML = '';
+
+    if (!query) {
+      resultDiv.textContent = 'Please enter a search keyword.';
+      return;
+    }
+
+    let matched = [];
+    let index = 0;
+
+    function processBatch() {
+      const end = Math.min(index + batchSize, domains.length);
+      for (; index < end; index++) {
+        let entry = domains[index].trim().toLowerCase();
+        if (!entry) continue;
+
+        const isMatch = entry.includes(query) && (!tld || entry.endsWith(tld));
+        if (isMatch) {
+          const highlighted = entry.replace(new RegExp(query, 'gi'), match => `<span class="highlight">${match}</span>`);
+          matched.push(highlighted);
+        }
+      }
+
+      if (index < domains.length) {
+        setTimeout(processBatch, 10); // avoid freezing the UI
+      } else {
+        resultDiv.innerHTML = matched.length > 0
+          ? matched.join("<br>")
+          : "No exact substring matches found.";
+      }
+    }
+
+    processBatch();
+  }
+</script>
+
+</body>
+</html>
