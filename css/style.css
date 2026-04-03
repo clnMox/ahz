@@ -129,6 +129,7 @@ nav img {
   gap: 1.5rem;
   z-index: 1000;
   transition: right 0.3s ease;
+  align-items: flex-end; /* move items to the right */
 }
 
 .sidebar.active {
