@@ -48,15 +48,19 @@ nav {
   max-width: 1200px;
   margin: auto;
   padding: 0.8rem 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 nav ul {
   list-style: none;
   display: flex;
   align-items: center;
+  justify-content: start;
+}
+
+/* Push Login to far right */
+nav ul li:last-child,
+nav ul li.login {
+  margin-left: auto;
 }
 
 nav ul li {
@@ -85,21 +89,17 @@ nav ul li.login a:hover {
   color: #020617;
 }
 
+/* Logo */
 nav img {
   height: 40px;
   border-radius: 50%;
 }
 
-.menu-button {
-  display: none;
-  font-size: 26px;
-  cursor: pointer;
-  color: #f8fafc;
-}
-
 /* =====================
    MOBILE SIDEBAR
 ===================== */
+
+/* Overlay */
 .overlay {
   position: fixed;
   top: 0;
@@ -110,12 +110,10 @@ nav img {
   backdrop-filter: blur(3px);
   display: none;
   z-index: 900;
+  transition: opacity 0.3s ease;
 }
 
-.overlay.active {
-  display: block;
-}
-
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
@@ -135,25 +133,34 @@ nav img {
   right: 0;
 }
 
+/* Sidebar items vertical */
 .sidebar li {
-  margin: 0;
+  list-style: none;
 }
 
 .sidebar li a {
+  display: block;
+  padding: 10px 0;
   font-size: 1.1rem;
   color: #e5e7eb;
-  display: block;
 }
 
-.sidebar .close-btn {
+/* Close button */
+.close-btn {
   align-self: flex-end;
   font-size: 1.5rem;
   cursor: pointer;
   color: #f8fafc;
 }
 
-.sidebar .close-btn:hover {
+.close-btn:hover {
   color: #38bdf8;
+}
+
+/* Menu button */
+.menu-button {
+  display: none;
+  cursor: pointer;
 }
 
 /* =====================
