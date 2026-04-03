@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>welcome | FreeWorld</title>
+    <title>Welcome | FreeWorld</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -11,22 +11,12 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <!-- Overlay -->
+    <div class="overlay" onclick="hideSidebar()"></div>
+
     <header>
       <nav>
-        <ul class="sidebar">
-          <li onclick="hideSidebar()">
-            <a href="#"
-              ><img
-                width="30"
-                height="30"
-                src="https://img.icons8.com/ios-glyphs/30/macos-close.png"
-                alt="macos-close"
-            /></a>
-          </li>
-          <li><a href="home">Home</a></li>
-          <li><a href="error">About</a></li>
-          <li><a href="login">Login</a></li>
-        </ul>
+        <!-- Logo and menu -->
         <ul>
           <li>
             <a href="#"><img src="images/mox.jpg" alt="logo" /></a>
@@ -34,17 +24,22 @@
           <li class="hideOnMobile"><a href="home">Home</a></li>
           <li class="hideOnMobile"><a href="error">About</a></li>
           <li class="hideOnMobile login"><a href="login">Login</a></li>
+          <!-- Menu button -->
           <li class="menu-button" onclick="showSidebar()">
-            <a href="#"
-              ><img
-                width="26"
-                height="26"
-                src="https://img.icons8.com/fluency/100/menu--v2.png"
-                alt="menu--v2"
-            /></a>
+            <a href="#"><i class="fas fa-bars" style="font-size:1.5rem;"></i></a>
           </li>
         </ul>
       </nav>
+
+      <!-- Sidebar -->
+      <ul class="sidebar">
+        <li class="close-btn" onclick="hideSidebar()">
+          <i class="fas fa-times"></i>
+        </li>
+        <li><a href="home">Home</a></li>
+        <li><a href="error">About</a></li>
+        <li><a href="login">Login</a></li>
+      </ul>
     </header>
 
     <div class="content">
@@ -63,9 +58,7 @@
     <!-- Footer -->
     <footer class="footer">
       <div class="container">
-        <!-- Top section with columns -->
         <div class="footer-top">
-          <!-- About Us Column -->
           <div class="footer-column">
             <h3>About Us</h3>
             <p>
@@ -74,7 +67,6 @@
             </p>
           </div>
 
-          <!-- Quick Links Column -->
           <div class="footer-column">
             <h3>Quick Links</h3>
             <ul>
@@ -86,7 +78,6 @@
             </ul>
           </div>
 
-          <!-- Contact Info Column -->
           <div class="footer-column">
             <h3>Contact Us</h3>
             <ul>
@@ -96,42 +87,23 @@
             </ul>
           </div>
 
-          <!-- Social Media Column -->
           <div class="footer-column">
             <h3>Follow Us</h3>
             <div class="social-icons">
-              <a href="https://www.youtub.com/@aayo3231" target="_blank"
-                ><i class="fab fa-youtube"></i
-              ></a>
-              <a href="https://d1zkvjyzxsu8o1.cloudfront.net" target="_blank"
-                ><i class="fab fa-facebook"></i
-              ></a>
-              <a href="https://d1zkvjyzxsu8o1.cloudfront.net" target="_blank"
-                ><i class="fab fa-linkedin"></i
-              ></a>
-              <a href="https://t.me/lazyguru" target="_blank"
-                ><i class="fab fa-telegram"></i
-              ></a>
+              <a href="https://www.youtub.com/@aayo3231" target="_blank"><i class="fab fa-youtube"></i></a>
+              <a href="https://d1zkvjyzxsu8o1.cloudfront.net" target="_blank"><i class="fab fa-facebook"></i></a>
+              <a href="https://d1zkvjyzxsu8o1.cloudfront.net" target="_blank"><i class="fab fa-linkedin"></i></a>
+              <a href="https://t.me/lazyguru" target="_blank"><i class="fab fa-telegram"></i></a>
               <a href="https://x.com/ayosrv" target="_blank">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                >
-                  <path
-                    d="M18.42,14.009L27.891,3h-2.244l-8.224,9.559L10.855,3H3.28l9.932,14.455L3.28,29h2.244l8.684-10.095,6.936,10.095h7.576l-10.301-14.991h0Zm-3.074,3.573l-1.006-1.439L6.333,4.69h3.447l6.462,9.243,1.006,1.439,8.4,12.015h-3.447l-6.854-9.804h0Z"
-                  ></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                  <path d="M18.42,14.009L27.891,3h-2.244l-8.224,9.559L10.855,3H3.28l9.932,14.455L3.28,29h2.244l8.684-10.095,6.936,10.095h7.576l-10.301-14.991h0Zm-3.074,3.573l-1.006-1.439L6.333,4.69h3.447l6.462,9.243,1.006,1.439,8.4,12.015h-3.447l-6.854-9.804h0Z"></path>
                 </svg>
               </a>
-              <a href="https://d1zkvjyzxsu8o1.cloudfront.net" target="_blank"
-                ><i class="fab fa-instagram"></i
-              ></a>
+              <a href="https://d1zkvjyzxsu8o1.cloudfront.net" target="_blank"><i class="fab fa-instagram"></i></a>
             </div>
           </div>
         </div>
 
-        <!-- Bottom section with copyright -->
         <div class="footer-bottom">
           <p class="copyright">&copy; 2026 ClnMox. All rights reserved.</p>
           <p>
@@ -140,15 +112,20 @@
         </div>
       </div>
     </footer>
+
     <script>
+      const sidebar = document.querySelector(".sidebar");
+      const overlay = document.querySelector(".overlay");
+
       function showSidebar() {
-        const sidebar = document.querySelector(".sidebar");
-        sidebar.style.display = "flex";
+        sidebar.classList.add("active");
+        overlay.style.display = "block";
       }
+
       function hideSidebar() {
-        const sidebar = document.querySelector(".sidebar");
-        sidebar.style.display = "none";
+        sidebar.classList.remove("active");
+        overlay.style.display = "none";
       }
     </script>
   </body>
-</html>
+              </html>
