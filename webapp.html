@@ -32,51 +32,88 @@ body{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:15px;
-    flex-wrap:wrap;
+    gap:10px;
 }
 
+/* TOP ROW */
+.top-row{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:12px;
+}
+
+/* MENU BUTTON */
+.menu-btn{
+    font-size:32px;
+    color:white;
+    cursor:pointer;
+    user-select:none;
+    margin-bottom:12px;
+}
+/* LOGO */
 .logo{
     color:#ff9900;
-    font-size:32px;
+    font-size:28px;
     font-weight:bold;
+    white-space:nowrap;
+    margin-bottom:12px;
 }
 
+/* SEARCH */
 .search-bar{
     flex:1;
-    min-width:220px;
-    padding:12px;
+    padding:10px;
     border:none;
     border-radius:6px;
     outline:none;
-    font-size:16px;
+    font-size:15px;
+    min-width:0;
 }
 
+/* ICONS */
 .icons{
     display:flex;
-    gap:18px;
-    font-size:26px;
+    gap:12px;
+    font-size:24px;
     cursor:pointer;
+    white-space:nowrap;
+    margin-left: auto;
 }
 
-/* NAVBAR */
 .navbar{
     background:#232f3e;
     display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-    padding:14px 20px;
+    gap:18px;
+    padding:12px 15px;
+
+    overflow-x:auto;
+    white-space:nowrap;
+    -webkit-overflow-scrolling:touch;
 }
 
+/* Hide scrollbar (optional but cleaner) */
+.navbar::-webkit-scrollbar{
+    display:none;
+}
+
+.navbar{
+    scrollbar-width:none;
+}
+
+/* LINKS */
 .navbar a{
     color:white;
     text-decoration:none;
-    transition:0.3s;
     font-size:15px;
+    flex:0 0 auto;
+    padding:6px 10px;
+    border-radius:5px;
 }
 
 .navbar a:hover{
-    color:#ff9900;
+    background:#ff9900;
+    color:black;
 }
 
 /* HERO SECTION */
@@ -219,20 +256,141 @@ body{
     background:#f0c800;
 }
 
-/* FOOTER */
-.footer{
-    background:#131921;
+/* Footer */
+.footer {
+    background-color: #1a1a1a;
+    color: white;
+    padding: 40px 20px;
+    margin-top: 40px;
+}
+
+.about{
+    background:#000;
+    color:#fff;
+    padding:30px 20px;
+}
+
+.about h1{
+    font-size:28px;
+    margin-bottom:15px;
+}
+
+.about h2{
+    font-size:22px;
+    color:#ccc;
+    margin-bottom:15px;
+}
+
+.text{
+    font-size:16px;
+    line-height:1.6;
+    max-height:80px;
+    overflow:hidden;
+    transition:0.3s;
+}
+
+.show-more{
+    margin-top:15px;
+    padding:15px;
+    border:none;
+    background:#ff9900;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+    border-radius:5px;
+    margin:15px auto 0;
+    text-align:center;
+}
+
+/* BACK TO TOP */
+.back-top{
+    background:#333;
     color:white;
     text-align:center;
-    padding:25px;
-    margin-top:30px;
+    padding:15px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.back-top:hover{
+    background:#444;
+}
+
+.footer-links{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    padding:20px;
+    background:#131921;
+}
+
+/* LINKS */
+.footer-links a{
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+    padding:5px 10px;
+    border-radius:5px;
+    transition:0.3s;
+}
+
+.footer-links a:hover{
+    background:#ff9900;
+    color:black;
+}
+
+.footer-bottom{
+    background:#0f172a;
+    color:white;
+    text-align:center;
+    padding:15px;
+    font-size:14px;
+    border-top:1px solid rgba(255,255,255,0.1);
+}
+
+.footer-bottom p{
+    margin:0;
+    opacity:0.8;
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+}
+.nav-icon {
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-icon:hover {
+    color: #ffb800;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-links {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .footer {
+        padding: 30px 15px;
+    }
 }
 
 /* MOBILE */
 @media(max-width:768px){
 
     .header-top{
-        flex-direction:column;
+        flex-direction:row;
         align-items:stretch;
     }
 
@@ -259,33 +417,40 @@ body{
 
 <body>
 
-<!-- HEADER -->
 <header class="header">
 
-    <div class="header-top">
+    <div class="top-row">
+
+        <div class="menu-btn">☰</div>
 
         <div class="logo">ShopHub</div>
+
+    </div>
+
+    <div class="header-top">
 
         <input type="text" placeholder="Search products..." class="search-bar">
 
         <div class="icons">
             <span>👤</span>
-            <span id="cart">🛒</span>
+            <span>🛒</span>
         </div>
 
     </div>
 
 </header>
-
 <!-- NAVIGATION -->
 <nav class="navbar">
     <a href="#">All</a>
-    <a href="#">Deals</a>
-    <a href="#">Best Sellers</a>
-    <a href="#">Electronics</a>
-    <a href="#">Fashion</a>
-    <a href="#">Gaming</a>
-    <a href="#">Phones</a>
+    <a href="#">Laptops</a>
+    <a href="#">Printers</a>
+    <a href="#">Desktops</a>
+    <a href="#">Monitors</a>
+    <a href="#">Toners</a>
+    <a href="#">Networking</a>
+    <a href="#">Softwares</a>
+    <a href="#">Accessories</a>
+    <a href="#">Storage</a>
 </nav>
 
 <!-- HERO -->
@@ -308,10 +473,10 @@ body{
     <!-- PRODUCT -->
     <div class="product-card">
 
-        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop" alt="Shoes">
+        <img src="https://images.pexels.com/photos/8534464/pexels-photo-8534464.jpeg" alt="Laptop">
 
         <div class="product-info">
-            <h3>Running Sneakers</h3>
+            <h3>Laptops</h3>
             <p class="price">$29.99</p>
             <button>Add to Cart</button>
         </div>
@@ -370,11 +535,49 @@ body{
 
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
+<section class="about">
 
-    <p>© 2026 ShopHub. All rights reserved.</p>
+    <h1>Moritech Kenya - Unveiling Our Leading E-Commerce Website</h1>
 
+    <h2>Welcome to the ultimate online shopping destination!</h2>
+
+    <p class="text">
+        Our e-commerce platform is here to revolutionize your shopping journey. Whether you're on the hunt for cutting-edge tech gadgets, the latest tech trends, or essential office appliances & accessories, we've got it all. We're not just an ordinary online store; we're your digital shopping haven. Bid farewell to crowded malls and say hello to the convenience and ease of buying online in Nairobi, Mombasa, Nakuru, Kisii and all across Kenya.
+    </p>
+
+    <button class="show-more" onclick="toggleText()">Show More</button>
+
+</section>
+
+<!-- BACK TO TOP -->
+<div class="back-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+    ^ BACK TO TOP
+</div>
+
+    <!-- FOOTER LINKS -->
+<footer>
+
+    <div class="footer-links">
+
+        <a href="#">CHAT WITH US</a>
+        <a href="#">HELP CENTER</a>
+        <a href="#">CONTACT US</a>
+        <a href="#">SHIPPING & DELIVERY</a>
+        <a href="#">RETURN POLICY</a>
+        <a href="#">CORPORATE & BULK PURCHASES</a>
+        <a href="#">ORDER & PICK UP POINT APPLICATION</a>
+        <a href="#">BECOME A VENDOR</a>
+        <a href="#">REPORT A PRODUCT</a>
+        <a href="#">TERMS & CONDITIONS</a>
+        <a href="#">PRIVACY NOTICE</a>
+        <a href="#">COOKIES NOTICE</a>
+
+    </div>
+
+    <!-- Copyright -->
+    <div class="footer-bottom">
+        <p>© 2026 Shophub. All Rights Reserved</p>
+    </div>
 </footer>
 
 <script>
@@ -417,6 +620,21 @@ searchBar.addEventListener("keyup", function(){
 
 });
 
+</script>
+
+<script>
+function toggleText(){
+    const text = document.querySelector(".text");
+    const btn = document.querySelector(".show-more");
+
+    if(text.style.maxHeight === "none"){
+        text.style.maxHeight = "80px";
+        btn.innerText = "Show More";
+    } else {
+        text.style.maxHeight = "none";
+        btn.innerText = "Show Less";
+    }
+}
 </script>
 
 </body>
