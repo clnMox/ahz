@@ -46,6 +46,24 @@
         width: 100%;
         resize: none;
       }
+      details {
+        margin: 10px 0;
+        border: 1px solid #444;
+        border-radius: 5px;
+        background: #111;
+      }
+
+      summary {
+        padding: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #ca6f1e;
+      }
+
+      details div {
+        padding: 10px;
+        border-top: 1px solid #444;
+      }
     </style>
   </head>
   <body>
@@ -55,7 +73,17 @@
     <textarea id="baseUrl" rows="3">
 https://search.censys.io/search/report?resource=hosts&q=.elb.amazonaws.com+and+location.country%3DSouth+Africa+and+ip%3A[13.240.0.0+to+13.245.155.255]&virtual_hosts=ONLY&field=name&num_buckets=1000</textarea
     >
+<details>
+      <summary>View ASN Information</summary>
 
+      <div style="padding: 10px; margin-top: 5px; border: 1px solid #444">
+        <p><strong>Flare:</strong> https://search.censys.io/search/report?resource=hosts&q=ip:[0.0.0.0%20to%20255.255.255.255]+and+autonomous_system.asn%3A+13335&virtual_hosts=ONLY&field=Ip&num_buckets=1000
+</p>
+        <p><strong>Google:</strong> ASN 15169</p>
+        <p><strong>Gcore:</strong> ASN 199524</p>
+        <p><strong>Gcore-1:</strong> ASN 202422</p>
+      </div>
+    </details>
     <div class="row">
       <label><input type="checkbox" id="includeAsn" checked /> ASN:</label>
       <select id="asn">
