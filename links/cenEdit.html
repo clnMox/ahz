@@ -318,7 +318,7 @@ https://search.censys.io/search/report?resource=hosts&q=.elb.amazonaws.com+and+l
 
       function openURL() {
         const url = document.getElementById("finalUrl").value;
-        if (url) window.open(url, "censysTab");
+        if (url) window.open(url, "censysTab", "noopener,noreferrer");
       }
 
       function updateHistoryDropdown() {
