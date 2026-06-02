@@ -315,6 +315,89 @@ https://search.censys.io/search/report?resource=hosts&q=.elb.amazonaws.com+and+l
 
         document.getElementById("finalUrl").value = rawUrl;
       }
+      
+      let censysTab = null;
+      
+      function openURL() {
+      const url = document.getElementById("finalUrl").value;
+      if (!url) return;
+
+      // If tab exists and is still open → reuse it
+      if (censysTab && !censysTab.closed) {
+        censysTab.location.href = url;
+        censysTab.focus();
+        return;
+      }
+
+      // Otherwise create it once
+      censysTab = window.open(url, "censysTab");
+
+      if (!censysTab) {
+        alert("Popup blocked. Please allow popups for this site.");
+      }
+    }
+
+      function updateHistoryDropdown() {
+        const historySelect = document.getElementById("historySelect");
+        historySelect.innerHTML = '<option value="">--Select--</option>';
+
+        const ipHistory = JSON.parse(localStorage.getItem("ipHistory") || "[]");
+        ipHistory.forEach((range, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = `${range.startIP} → ${range.endIP}`;
+          historySelect.appendChild(option);
+        });
+      }
+
+      function loadFromHistory() {
+        const historySelect = document.getElementById("historySelect");
+        const selectedIndex = historySelect.value;
+        if (selectedIndex === "") return;
+
+        const ipHistory = JSON.parse(localStorage.getItem("ipHistory") || "[]");
+        const range = ipHistory[selectedIndex];
+
+        if (range) {
+          document.getElementById("manualStartIP").value = range.startIP;
+          document.getElementById("manualEndIP").value = range.endIP;
+          document.getElementById("rangeStart").textContent = range.startIP;
+          document.getElementById("rangeEnd").textContent = range.endIP;
+        }
+      }
+
+      // Load saved history on page load
+      window.addEventListener("load", () => {
+        updateHistoryDropdown();
+
+        const savedStartIP = localStorage.getItem("lastStartIP");
+        const savedEndIP = localStorage.getItem("lastEndIP");
+
+        if (savedStartIP) document.getElementById("manualStartIP").value = savedStartIP;
+        if (savedEndIP) document.getElementById("manualEndIP").value = savedEndIP;
+      });
+    </script>
+  </body>
+</html>
+gex = new RegExp(`\\+and\\+${t.replace(/\./g, "\\.")}`, "gi");
+            rawUrl = rawUrl.replace(regex, "");
+          });
+          rawUrl = rawUrl.replace(/(q=[^&]*)/, `$1+and+${tld}`);
+        }
+
+        // Field
+        if (document.getElementById("includeField").checked) {
+          const field = document.getElementById("field").value;
+          rawUrl = rawUrl.replace(/([?&]|%26|%3F)field(=|%3D)[^&%]*/gi, "");
+          rawUrl = updateOrAddParam(rawUrl, "field", field);
+        }
+
+        // num_buckets
+        rawUrl = rawUrl.replace(/(&|\?|%26|%3F)num_buckets(=|%3D)\d+/i, "");
+        rawUrl = updateOrAddParam(rawUrl, "num_buckets", "1000");
+
+        document.getElementById("finalUrl").value = rawUrl;
+      }
 
       let censysTab = null;
 
