@@ -80,9 +80,9 @@ https://search.censys.io/search/report?resource=hosts&q=.elb.amazonaws.com+and+l
       <div style="padding: 10px; margin-top: 5px; border: 1px solid #444">
         <p><strong>Flare:</strong> https://search.censys.io/search/report?resource=hosts&q=ip:[0.0.0.0%20to%20255.255.255.255]+and+autonomous_system.asn%3A+13335&virtual_hosts=ONLY&field=Ip&num_buckets=1000
 </p>
-        <p><strong>Google:</strong> ASN 15169</p>
-        <p><strong>Gcore:</strong> ASN 199524</p>
-        <p><strong>Gcore-1:</strong> ASN 202422</p>
+        <p><strong>KE tls:</strong> https://search.censys.io/search/report?resource=hosts&q=ip:[0.0.0.0%20to%20255.255.255.255]+and+services.tls.certificate.parsed.subject.country: "KE"&virtual_hosts=ONLY&field=Ip&num_buckets=1000</p>
+        <p><strong>Flares:</strong> 132892 202623 14789 395747 400095</p>
+        <p><strong>Fastly:</strong> 895</p>
       </div>
     </details>
     <div class="row">
@@ -90,8 +90,15 @@ https://search.censys.io/search/report?resource=hosts&q=.elb.amazonaws.com+and+l
       <select id="asn">
         <option value="54113">Fastly</option>
         <option value="15169">Google</option>
+        <option value="13335">CloudFlarenet</option>
+        <option value="209242">CloudFlarespect</option>
+        <option value="33771">Saf1</option>
+        <option value="37061">Saf2</option>
+        <option value="36926">Airtel</option>
         <option value="199524">Gcore</option>
         <option value="202422">Gcore-1</option>
+        <option value="12455">Telkom</option>
+        <option value="54113">Fastly</option>
         <option value="ONLY" selected>ONLY</option>
       </select>
 
