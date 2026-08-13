@@ -12,10 +12,12 @@
         color: #ffffff;
         background-color: rgb(5, 0, 31);
     }
+
     .domain-list {
         list-style: none;
         padding: 0;
     }
+
     .domain-list li {
         display: flex;
         align-items: center;
@@ -23,19 +25,30 @@
         padding: 10px;
         border: 1px solid #ccc;
     }
+
     .domain-list li:hover {
         font-weight: bold;
         color: #00ffff;
         background-color: #595a00;
     }
-    .copy-icon, .link-icon {
+
+    .domain-text {
+        flex: 1;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .copy-icon,
+    .link-icon {
         cursor: pointer;
         padding: 5px 10px;
         margin-left: 10px;
         background-color: rgb(25, 0, 255);
         border-radius: 3px;
         user-select: none;
+        -webkit-user-select: none;
     }
+
     .notification {
         position: fixed;
         top: 20px;
@@ -48,24 +61,27 @@
         display: none;
         font-weight: bold;
         cursor: pointer;
+        z-index: 9999;
     }
+
     .notification.show {
         display: block;
     }
-    .domain-text {
-        flex: 1;
-    }
+
     .controls {
         margin: 10px 0;
         display: flex;
         gap: 10px;
         align-items: center;
+        flex-wrap: wrap;
     }
+
     button {
         padding: 6px 12px;
         cursor: pointer;
         font-weight: bold;
     }
+
     .counter {
         font-weight: bold;
         color: #00ffcc;
@@ -78,151 +94,631 @@
 <h1>Copy and Remove Domain</h1>
 
 <div class="controls">
+
     <input type="file" id="fileInput" accept=".txt">
-    <button id="undoBtn">↩ Undo Last</button>
-    <span class="counter">Remaining: <span id="count">0</span></span>
+
+    <button id="undoBtn">
+        ↩ Undo Last
+    </button>
+
+    <span class="counter">
+        Remaining: <span id="count">0</span>
+    </span>
+
 </div>
 
 <ul id="domainList" class="domain-list"></ul>
 
 <div id="notification" class="notification"></div>
 
+
 <script>
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    const domainList = document.getElementById('domainList');
-    const fileInput = document.getElementById('fileInput');
-    const notification = document.getElementById('notification');
-    const undoBtn = document.getElementById('undoBtn');
-    const countEl = document.getElementById('count');
+    const domainList =
+        document.getElementById('domainList');
+
+    const fileInput =
+        document.getElementById('fileInput');
+
+    const notification =
+        document.getElementById('notification');
+
+    const undoBtn =
+        document.getElementById('undoBtn');
+
+    const countEl =
+        document.getElementById('count');
+
 
     const TAB_NAME = 'securitytrails_tab';
 
-    let history = JSON.parse(localStorage.getItem('history')) || [];
+    const LONG_PRESS_TIME = 3000;
 
-    /* ---------- Helpers ---------- */
+    let history =
+        JSON.parse(localStorage.getItem('history')) || [];
+
+    let pressTimer = null;
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
 
     function updateCount() {
-        countEl.textContent = domainList.children.length;
+
+        countEl.textContent =
+            domainList.children.length;
+
     }
 
-    function showNotification(msg) {
-        notification.textContent = msg;
+
+    function showNotification(message) {
+
+        notification.textContent = message;
+
         notification.classList.add('show');
-        setTimeout(() => notification.classList.remove('show'), 1200);
+
+        setTimeout(() => {
+
+            notification.classList.remove('show');
+
+        }, 1200);
+
     }
+
 
     function saveDomains() {
-        const domains = [...domainList.querySelectorAll('.domain-text')]
-            .map(e => e.textContent.trim());
-        localStorage.setItem('domains', JSON.stringify(domains));
+
+        const domains =
+            [...domainList.querySelectorAll('.domain-text')]
+                .map(element =>
+                    element.textContent.trim()
+                );
+
+        localStorage.setItem(
+            'domains',
+            JSON.stringify(domains)
+        );
+
         updateCount();
+
     }
+
 
     function saveHistory() {
-        localStorage.setItem('history', JSON.stringify(history));
+
+        localStorage.setItem(
+            'history',
+            JSON.stringify(history)
+        );
+
     }
+
 
     function addDomain(domain, toTop = false) {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span class="domain-text">${domain}</span>
-            <span class="link-icon">🔗</span>
-            <span class="copy-icon">📋</span>
-        `;
-        toTop ? domainList.prepend(li) : domainList.appendChild(li);
+
+        const li =
+            document.createElement('li');
+
+        const domainText =
+            document.createElement('span');
+
+        domainText.className =
+            'domain-text';
+
+        domainText.textContent =
+            domain;
+
+
+        const linkIcon =
+            document.createElement('span');
+
+        linkIcon.className =
+            'link-icon';
+
+        linkIcon.textContent =
+            '🔗';
+
+
+        const copyIcon =
+            document.createElement('span');
+
+        copyIcon.className =
+            'copy-icon';
+
+        copyIcon.textContent =
+            '📋';
+
+
+        li.appendChild(domainText);
+
+        li.appendChild(linkIcon);
+
+        li.appendChild(copyIcon);
+
+
+        if (toTop) {
+
+            domainList.prepend(li);
+
+        } else {
+
+            domainList.appendChild(li);
+
+        }
+
         updateCount();
+
     }
+
 
     function removeFirstDomain(reason) {
-        const first = domainList.querySelector('li');
-        if (!first) return;
 
-        const domain = first.querySelector('.domain-text').textContent.trim();
+        const first =
+            domainList.querySelector('li');
+
+        if (!first) {
+            return;
+        }
+
+
+        const domain =
+            first
+                .querySelector('.domain-text')
+                .textContent
+                .trim();
+
+
         history.push(domain);
+
         saveHistory();
 
+
         first.remove();
+
         saveDomains();
-        showNotification(`${reason}: ${domain}`);
+
+
+        showNotification(
+            `${reason}: ${domain}`
+        );
+
     }
 
-    /* ---------- Load ---------- */
+
+    function copyOnly(domain) {
+
+        navigator.clipboard
+            .writeText(domain)
+
+            .then(() => {
+
+                showNotification(
+                    `Copied: ${domain}`
+                );
+
+            })
+
+            .catch(() => {
+
+                showNotification(
+                    'Copy failed'
+                );
+
+            });
+
+    }
+
+
+    /* =====================================================
+       LOAD SAVED DOMAINS
+    ===================================================== */
 
     function loadDomains() {
-        const stored = JSON.parse(localStorage.getItem('domains')) || [];
+
+        const stored =
+            JSON.parse(
+                localStorage.getItem('domains')
+            ) || [];
+
+
         domainList.innerHTML = '';
-        stored.forEach(addDomain);
+
+
+        stored.forEach(domain => {
+
+            addDomain(domain);
+
+        });
+
+
         updateCount();
+
     }
+
 
     loadDomains();
 
-    /* ---------- File Upload ---------- */
 
-    fileInput.addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
+    /* =====================================================
+       FILE UPLOAD
+    ===================================================== */
 
-        const reader = new FileReader();
-        reader.onload = ev => {
-            const domains = ev.target.result
-                .split('\n')
-                .map(d => d.trim())
-                .filter(Boolean);
+    fileInput.addEventListener(
+        'change',
+        event => {
 
-            domainList.innerHTML = '';
-            domains.forEach(addDomain);
-            saveDomains();
-        };
-        reader.readAsText(file);
-    });
+            const file =
+                event.target.files[0];
 
-    /* ---------- Undo ---------- */
-
-    undoBtn.addEventListener('click', () => {
-        if (!history.length) return;
-        const domain = history.pop();
-        saveHistory();
-        addDomain(domain, true);
-        saveDomains();
-        showNotification(`Restored: ${domain}`);
-    });
-
-    /* ---------- Click Handling ---------- */
-
-    domainList.addEventListener('mousedown', e => {
-        const first = domainList.querySelector('li');
-        if (!first || e.target.parentNode !== first) return;
-
-        const domain = first.querySelector('.domain-text').textContent.trim();
-
-        // COPY
-        if (e.target.classList.contains('copy-icon') && e.button === 0) {
-            navigator.clipboard.writeText(domain);
-            removeFirstDomain('Copied');
-        }
-
-        // LINK
-        if (e.target.classList.contains('link-icon')) {
-            const url = 'https://securitytrails.com/list/ip/' + encodeURIComponent(domain);
-
-            // Middle click → open only
-            if (e.button === 1) {
-                window.open(url, TAB_NAME);
-                showNotification(`Opened (kept): ${domain}`);
+            if (!file) {
                 return;
             }
 
-            // Left click → open + remove
-            if (e.button === 0) {
-                window.open(url, TAB_NAME);
-                removeFirstDomain('Opened');
-            }
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                event => {
+
+                    const domains =
+                        event.target.result
+                            .split(/\r?\n/)
+                            .map(domain =>
+                                domain.trim()
+                            )
+                            .filter(Boolean);
+
+
+                    domainList.innerHTML = '';
+
+
+                    domains.forEach(domain => {
+
+                        addDomain(domain);
+
+                    });
+
+
+                    saveDomains();
+
+                };
+
+
+            reader.readAsText(file);
+
         }
-    });
+    );
+
+
+    /* =====================================================
+       UNDO
+    ===================================================== */
+
+    undoBtn.addEventListener(
+        'click',
+        () => {
+
+            if (!history.length) {
+
+                showNotification(
+                    'Nothing to undo'
+                );
+
+                return;
+            }
+
+
+            const domain =
+                history.pop();
+
+
+            saveHistory();
+
+
+            addDomain(
+                domain,
+                true
+            );
+
+
+            saveDomains();
+
+
+            showNotification(
+                `Restored: ${domain}`
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       LONG PRESS START
+       3 SECONDS = COPY ONLY
+       DOES NOT REMOVE
+    ===================================================== */
+
+    function startLongPress(element) {
+
+        if (
+            !element.classList.contains(
+                'domain-text'
+            )
+        ) {
+            return;
+        }
+
+
+        const first =
+            domainList.querySelector('li');
+
+
+        /*
+         * Only allow long press on the
+         * first domain.
+         */
+
+        if (
+            !first ||
+            element.parentNode !== first
+        ) {
+            return;
+        }
+
+
+        const domain =
+            element.textContent.trim();
+
+
+        clearLongPress();
+
+
+        pressTimer =
+            setTimeout(() => {
+
+                pressTimer = null;
+
+
+                /*
+                 * COPY ONLY
+                 *
+                 * The domain is NOT removed.
+                 */
+
+                copyOnly(domain);
+
+            }, LONG_PRESS_TIME);
+
+    }
+
+
+    function clearLongPress() {
+
+        if (pressTimer !== null) {
+
+            clearTimeout(
+                pressTimer
+            );
+
+            pressTimer = null;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       MOUSE LONG PRESS
+    ===================================================== */
+
+    domainList.addEventListener(
+        'mousedown',
+        event => {
+
+            if (event.button !== 0) {
+                return;
+            }
+
+
+            startLongPress(
+                event.target
+            );
+
+        }
+    );
+
+
+    domainList.addEventListener(
+        'mouseup',
+        () => {
+
+            clearLongPress();
+
+        }
+    );
+
+
+    domainList.addEventListener(
+        'mouseleave',
+        () => {
+
+            clearLongPress();
+
+        }
+    );
+
+
+    /* =====================================================
+       TOUCH LONG PRESS
+       IMPORTANT FOR ANDROID
+    ===================================================== */
+
+    domainList.addEventListener(
+        'touchstart',
+        event => {
+
+            startLongPress(
+                event.target
+            );
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    domainList.addEventListener(
+        'touchend',
+        () => {
+
+            clearLongPress();
+
+        }
+    );
+
+
+    domainList.addEventListener(
+        'touchcancel',
+        () => {
+
+            clearLongPress();
+
+        }
+    );
+
+
+    /* =====================================================
+       CLICK / BUTTON HANDLING
+    ===================================================== */
+
+    domainList.addEventListener(
+        'mousedown',
+        event => {
+
+            const first =
+                domainList.querySelector('li');
+
+
+            if (
+                !first ||
+                event.target.parentNode !== first
+            ) {
+                return;
+            }
+
+
+            const domain =
+                first
+                    .querySelector('.domain-text')
+                    .textContent
+                    .trim();
+
+
+            /* ---------------------------------------------
+               COPY BUTTON
+               LEFT CLICK = COPY + REMOVE
+            --------------------------------------------- */
+
+            if (
+                event.target.classList.contains(
+                    'copy-icon'
+                ) &&
+                event.button === 0
+            ) {
+
+                navigator.clipboard
+                    .writeText(domain)
+
+                    .then(() => {
+
+                        removeFirstDomain(
+                            'Copied'
+                        );
+
+                    })
+
+                    .catch(() => {
+
+                        showNotification(
+                            'Copy failed'
+                        );
+
+                    });
+
+            }
+
+
+            /* ---------------------------------------------
+               LINK BUTTON
+            --------------------------------------------- */
+
+            if (
+                event.target.classList.contains(
+                    'link-icon'
+                )
+            ) {
+
+                const url =
+                    'https://securitytrails.com/list/ip/' +
+                    encodeURIComponent(domain);
+
+
+                /* -----------------------------------------
+                   MIDDLE CLICK
+                   OPEN BUT KEEP DOMAIN
+                ----------------------------------------- */
+
+                if (event.button === 1) {
+
+                    window.open(
+                        url,
+                        TAB_NAME
+                    );
+
+
+                    showNotification(
+                        `Opened (kept): ${domain}`
+                    );
+
+
+                    return;
+
+                }
+
+
+                /* -----------------------------------------
+                   LEFT CLICK
+                   OPEN + REMOVE
+                ----------------------------------------- */
+
+                if (event.button === 0) {
+
+                    window.open(
+                        url,
+                        TAB_NAME
+                    );
+
+
+                    removeFirstDomain(
+                        'Opened'
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
 
 });
+
 </script>
 
 </body>
