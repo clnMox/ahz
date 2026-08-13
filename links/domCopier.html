@@ -3,118 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Domain Copier</title>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        color: #ffffff;
-        background-color: rgb(5, 0, 31);
-    }
 
-    .domain-list {
-        list-style: none;
-        padding: 0;
-    }
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    color: #ffffff;
+    background-color: rgb(5, 0, 31);
+}
 
-    .domain-list li {
-        display: flex;
-        align-items: center;
-        margin: 5px 0;
-        padding: 10px;
-        border: 1px solid #ccc;
-    }
+.domain-list {
+    list-style: none;
+    padding: 0;
+}
 
-    .domain-list li:hover {
-        font-weight: bold;
-        color: #00ffff;
-        background-color: #595a00;
-    }
+.domain-list li {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
 
-    .domain-text {
-        flex: 1;
-        user-select: none;
-        -webkit-user-select: none;
-    }
+.domain-list li:hover {
+    font-weight: bold;
+    color: #00ffff;
+    background-color: #595a00;
+}
 
-    .copy-icon,
-    .link-icon {
-        cursor: pointer;
-        padding: 5px 10px;
-        margin-left: 10px;
-        background-color: rgb(25, 0, 255);
-        border-radius: 3px;
-        user-select: none;
-        -webkit-user-select: none;
-    }
+.domain-text {
+    flex: 1;
 
-    .notification {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #ff0303;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        display: none;
-        font-weight: bold;
-        cursor: pointer;
-        z-index: 9999;
-    }
+    cursor: pointer;
 
-    .notification.show {
-        display: block;
-    }
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 
-    .controls {
-        margin: 10px 0;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-    }
+    /*
+     * Prevent the browser from handling
+     * the touch as text selection.
+     */
+    touch-action: manipulation;
+}
 
-    button {
-        padding: 6px 12px;
-        cursor: pointer;
-        font-weight: bold;
-    }
+.copy-icon,
+.link-icon {
+    cursor: pointer;
 
-    .counter {
-        font-weight: bold;
-        color: #00ffcc;
-    }
+    padding: 5px 10px;
+
+    margin-left: 10px;
+
+    background-color: rgb(25, 0, 255);
+
+    border-radius: 3px;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.notification {
+    position: fixed;
+
+    top: 20px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background-color: #ff0303;
+
+    color: white;
+
+    padding: 10px 20px;
+
+    border-radius: 5px;
+
+    display: none;
+
+    font-weight: bold;
+
+    z-index: 9999;
+
+    max-width: 90%;
+
+    text-align: center;
+}
+
+.notification.show {
+    display: block;
+}
+
+.controls {
+    margin: 10px 0;
+
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 6px 12px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+}
+
+.counter {
+    font-weight: bold;
+
+    color: #00ffcc;
+}
+
 </style>
 </head>
+
 
 <body>
 
 <h1>Copy and Remove Domain</h1>
 
+
 <div class="controls">
 
-    <input type="file" id="fileInput" accept=".txt">
+    <input
+        type="file"
+        id="fileInput"
+        accept=".txt"
+    >
 
     <button id="undoBtn">
         ↩ Undo Last
     </button>
 
     <span class="counter">
-        Remaining: <span id="count">0</span>
+        Remaining:
+        <span id="count">0</span>
     </span>
 
 </div>
 
-<ul id="domainList" class="domain-list"></ul>
 
-<div id="notification" class="notification"></div>
+<ul
+    id="domainList"
+    class="domain-list"
+></ul>
+
+
+<div
+    id="notification"
+    class="notification"
+></div>
 
 
 <script>
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
 
     const domainList =
         document.getElementById('domainList');
@@ -122,28 +176,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput =
         document.getElementById('fileInput');
 
-    const notification =
-        document.getElementById('notification');
-
     const undoBtn =
         document.getElementById('undoBtn');
 
     const countEl =
         document.getElementById('count');
 
+    const notification =
+        document.getElementById('notification');
 
-    const TAB_NAME = 'securitytrails_tab';
 
-    const LONG_PRESS_TIME = 3000;
+    const TAB_NAME =
+        'securitytrails_tab';
+
+
+    const LONG_PRESS_TIME =
+        3000;
+
 
     let history =
-        JSON.parse(localStorage.getItem('history')) || [];
+        JSON.parse(
+            localStorage.getItem('history') || '[]'
+        );
 
-    let pressTimer = null;
+
+    let longPressTimer = null;
+
+    let longPressTarget = null;
+
+    let longPressDone = false;
 
 
     /* =====================================================
-       HELPERS
+       COUNT
     ===================================================== */
 
     function updateCount() {
@@ -154,38 +219,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    /* =====================================================
+       NOTIFICATION
+    ===================================================== */
+
     function showNotification(message) {
 
-        notification.textContent = message;
+        notification.textContent =
+            message;
 
         notification.classList.add('show');
 
-        setTimeout(() => {
+
+        setTimeout(function () {
 
             notification.classList.remove('show');
 
-        }, 1200);
+        }, 1500);
 
     }
 
 
+    /* =====================================================
+       SAVE DOMAINS
+    ===================================================== */
+
     function saveDomains() {
 
         const domains =
-            [...domainList.querySelectorAll('.domain-text')]
-                .map(element =>
-                    element.textContent.trim()
-                );
+            Array.from(
+                domainList.querySelectorAll(
+                    '.domain-text'
+                )
+            ).map(function (element) {
+
+                return element.textContent.trim();
+
+            });
+
 
         localStorage.setItem(
             'domains',
             JSON.stringify(domains)
         );
 
+
         updateCount();
 
     }
 
+
+    /* =====================================================
+       SAVE HISTORY
+    ===================================================== */
 
     function saveHistory() {
 
@@ -197,46 +283,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    function addDomain(domain, toTop = false) {
+    /* =====================================================
+       ADD DOMAIN
+    ===================================================== */
+
+    function addDomain(
+        domain,
+        toTop
+    ) {
 
         const li =
             document.createElement('li');
 
-        const domainText =
+
+        const text =
             document.createElement('span');
 
-        domainText.className =
+        text.className =
             'domain-text';
 
-        domainText.textContent =
+        text.textContent =
             domain;
 
 
-        const linkIcon =
+        const link =
             document.createElement('span');
 
-        linkIcon.className =
+        link.className =
             'link-icon';
 
-        linkIcon.textContent =
+        link.textContent =
             '🔗';
 
 
-        const copyIcon =
+        const copy =
             document.createElement('span');
 
-        copyIcon.className =
+        copy.className =
             'copy-icon';
 
-        copyIcon.textContent =
+        copy.textContent =
             '📋';
 
 
-        li.appendChild(domainText);
+        li.appendChild(text);
 
-        li.appendChild(linkIcon);
+        li.appendChild(link);
 
-        li.appendChild(copyIcon);
+        li.appendChild(copy);
 
 
         if (toTop) {
@@ -249,15 +343,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }
 
+
         updateCount();
 
     }
 
 
+    /* =====================================================
+       REMOVE FIRST DOMAIN
+    ===================================================== */
+
     function removeFirstDomain(reason) {
 
         const first =
             domainList.querySelector('li');
+
 
         if (!first) {
             return;
@@ -265,10 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         const domain =
-            first
-                .querySelector('.domain-text')
-                .textContent
-                .trim();
+            first.querySelector(
+                '.domain-text'
+            ).textContent.trim();
 
 
         history.push(domain);
@@ -282,52 +381,160 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         showNotification(
-            `${reason}: ${domain}`
+            reason + ': ' + domain
         );
 
     }
 
 
-    function copyOnly(domain) {
+    /* =====================================================
+       COPY FUNCTION
+       
+       Uses navigator.clipboard first.
+       
+       If that fails, uses a textarea
+       fallback for Android/local pages.
+    ===================================================== */
 
-        navigator.clipboard
-            .writeText(domain)
+    function copyText(text) {
 
-            .then(() => {
+        /*
+         * First attempt:
+         * modern clipboard API
+         */
 
-                showNotification(
-                    `Copied: ${domain}`
-                );
+        if (
+            navigator.clipboard &&
+            navigator.clipboard.writeText
+        ) {
 
-            })
+            navigator.clipboard
+                .writeText(text)
 
-            .catch(() => {
+                .then(function () {
 
-                showNotification(
-                    'Copy failed'
-                );
+                    showNotification(
+                        'Copied: ' + text
+                    );
 
-            });
+                })
+
+                .catch(function () {
+
+                    /*
+                     * Clipboard API failed.
+                     * Try fallback.
+                     */
+
+                    copyFallback(text);
+
+                });
+
+            return;
+        }
+
+
+        /*
+         * Clipboard API unavailable.
+         */
+
+        copyFallback(text);
 
     }
 
 
     /* =====================================================
-       LOAD SAVED DOMAINS
+       CLIPBOARD FALLBACK
+    ===================================================== */
+
+    function copyFallback(text) {
+
+        const textarea =
+            document.createElement('textarea');
+
+
+        textarea.value =
+            text;
+
+
+        textarea.style.position =
+            'fixed';
+
+        textarea.style.left =
+            '-9999px';
+
+        textarea.style.top =
+            '0';
+
+        textarea.style.opacity =
+            '0';
+
+
+        document.body.appendChild(
+            textarea
+        );
+
+
+        textarea.focus();
+
+        textarea.select();
+
+
+        let success = false;
+
+
+        try {
+
+            success =
+                document.execCommand(
+                    'copy'
+                );
+
+        } catch (error) {
+
+            success = false;
+
+        }
+
+
+        textarea.remove();
+
+
+        if (success) {
+
+            showNotification(
+                'Copied: ' + text
+            );
+
+        } else {
+
+            showNotification(
+                'Copy failed'
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LOAD DOMAINS
     ===================================================== */
 
     function loadDomains() {
 
-        const stored =
+        const domains =
             JSON.parse(
-                localStorage.getItem('domains')
-            ) || [];
+                localStorage.getItem(
+                    'domains'
+                ) || '[]'
+            );
 
 
         domainList.innerHTML = '';
 
 
-        stored.forEach(domain => {
+        domains.forEach(function (domain) {
 
             addDomain(domain);
 
@@ -348,10 +555,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fileInput.addEventListener(
         'change',
-        event => {
+        function (event) {
 
             const file =
                 event.target.files[0];
+
 
             if (!file) {
                 return;
@@ -363,25 +571,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             reader.onload =
-                event => {
+                function (event) {
 
                     const domains =
                         event.target.result
                             .split(/\r?\n/)
-                            .map(domain =>
-                                domain.trim()
-                            )
+                            .map(function (domain) {
+
+                                return domain.trim();
+
+                            })
                             .filter(Boolean);
 
 
-                    domainList.innerHTML = '';
+                    domainList.innerHTML =
+                        '';
 
 
-                    domains.forEach(domain => {
+                    domains.forEach(
+                        function (domain) {
 
-                        addDomain(domain);
+                            addDomain(domain);
 
-                    });
+                        }
+                    );
 
 
                     saveDomains();
@@ -401,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     undoBtn.addEventListener(
         'click',
-        () => {
+        function () {
 
             if (!history.length) {
 
@@ -430,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             showNotification(
-                `Restored: ${domain}`
+                'Restored: ' + domain
             );
 
         }
@@ -438,12 +651,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* =====================================================
-       LONG PRESS START
-       3 SECONDS = COPY ONLY
-       DOES NOT REMOVE
+       START LONG PRESS
+       
+       Works on ANY domain text.
     ===================================================== */
 
     function startLongPress(element) {
+
+        /*
+         * Make sure we touched the IP/domain.
+         */
 
         if (
             !element.classList.contains(
@@ -454,117 +671,112 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        const first =
-            domainList.querySelector('li');
-
-
         /*
-         * Only allow long press on the
-         * first domain.
+         * Clear previous timer.
          */
 
-        if (
-            !first ||
-            element.parentNode !== first
-        ) {
-            return;
-        }
+        clearLongPress();
+
+
+        longPressTarget =
+            element;
+
+
+        longPressDone =
+            false;
 
 
         const domain =
             element.textContent.trim();
 
 
-        clearLongPress();
+        /*
+         * Start 3-second timer.
+         */
+
+        longPressTimer =
+            setTimeout(
+                function () {
+
+                    /*
+                     * Long press completed.
+                     */
+
+                    longPressDone =
+                        true;
 
 
-        pressTimer =
-            setTimeout(() => {
-
-                pressTimer = null;
+                    longPressTimer =
+                        null;
 
 
-                /*
-                 * COPY ONLY
-                 *
-                 * The domain is NOT removed.
-                 */
+                    /*
+                     * COPY ONLY.
+                     *
+                     * DO NOT REMOVE.
+                     */
 
-                copyOnly(domain);
+                    copyText(domain);
 
-            }, LONG_PRESS_TIME);
+
+                },
+                LONG_PRESS_TIME
+            );
 
     }
 
+
+    /* =====================================================
+       CLEAR LONG PRESS
+    ===================================================== */
 
     function clearLongPress() {
 
-        if (pressTimer !== null) {
+        if (
+            longPressTimer !== null
+        ) {
 
             clearTimeout(
-                pressTimer
+                longPressTimer
             );
 
-            pressTimer = null;
+            longPressTimer =
+                null;
 
         }
+
+
+        longPressTarget =
+            null;
 
     }
 
 
     /* =====================================================
-       MOUSE LONG PRESS
-    ===================================================== */
-
-    domainList.addEventListener(
-        'mousedown',
-        event => {
-
-            if (event.button !== 0) {
-                return;
-            }
-
-
-            startLongPress(
-                event.target
-            );
-
-        }
-    );
-
-
-    domainList.addEventListener(
-        'mouseup',
-        () => {
-
-            clearLongPress();
-
-        }
-    );
-
-
-    domainList.addEventListener(
-        'mouseleave',
-        () => {
-
-            clearLongPress();
-
-        }
-    );
-
-
-    /* =====================================================
-       TOUCH LONG PRESS
-       IMPORTANT FOR ANDROID
+       TOUCH START
+       
+       This is the important part for Android.
     ===================================================== */
 
     domainList.addEventListener(
         'touchstart',
-        event => {
+        function (event) {
 
-            startLongPress(
-                event.target
-            );
+            const element =
+                event.target;
+
+
+            if (
+                !element.classList.contains(
+                    'domain-text'
+                )
+            ) {
+                return;
+            }
+
+
+            startLongPress(element);
+
 
         },
         {
@@ -573,19 +785,41 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
 
+    /* =====================================================
+       TOUCH END
+    ===================================================== */
+
     domainList.addEventListener(
         'touchend',
-        () => {
+        function () {
 
-            clearLongPress();
+            /*
+             * If 3 seconds were not reached,
+             * cancel the timer.
+             */
+
+            if (!longPressDone) {
+
+                clearLongPress();
+
+            } else {
+
+                longPressTimer =
+                    null;
+
+            }
 
         }
     );
 
 
+    /* =====================================================
+       TOUCH CANCEL
+    ===================================================== */
+
     domainList.addEventListener(
         'touchcancel',
-        () => {
+        function () {
 
             clearLongPress();
 
@@ -594,122 +828,288 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* =====================================================
-       CLICK / BUTTON HANDLING
+       MOUSE DOWN
+       
+       Also supports computer mouse.
     ===================================================== */
 
     domainList.addEventListener(
         'mousedown',
-        event => {
+        function (event) {
 
-            const first =
-                domainList.querySelector('li');
+            if (event.button !== 0) {
+                return;
+            }
+
+
+            const element =
+                event.target;
 
 
             if (
-                !first ||
-                event.target.parentNode !== first
+                !element.classList.contains(
+                    'domain-text'
+                )
             ) {
                 return;
             }
 
 
-            const domain =
-                first
-                    .querySelector('.domain-text')
-                    .textContent
-                    .trim();
+            startLongPress(element);
+
+        }
+    );
 
 
-            /* ---------------------------------------------
-               COPY BUTTON
-               LEFT CLICK = COPY + REMOVE
-            --------------------------------------------- */
+    /* =====================================================
+       MOUSE UP
+    ===================================================== */
+
+    domainList.addEventListener(
+        'mouseup',
+        function () {
+
+            if (!longPressDone) {
+
+                clearLongPress();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       MOUSE LEAVE
+    ===================================================== */
+
+    domainList.addEventListener(
+        'mouseleave',
+        function () {
+
+            if (!longPressDone) {
+
+                clearLongPress();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       COPY BUTTON
+       
+       Normal click:
+       COPY + REMOVE
+    ===================================================== */
+
+    domainList.addEventListener(
+        'click',
+        function (event) {
+
+            const first =
+                domainList.querySelector('li');
+
+
+            if (!first) {
+                return;
+            }
+
+
+            /*
+             * COPY BUTTON
+             */
 
             if (
                 event.target.classList.contains(
                     'copy-icon'
-                ) &&
-                event.button === 0
+                )
             ) {
 
-                navigator.clipboard
-                    .writeText(domain)
+                const domain =
+                    event.target
+                        .parentNode
+                        .querySelector(
+                            '.domain-text'
+                        )
+                        .textContent
+                        .trim();
 
-                    .then(() => {
 
-                        removeFirstDomain(
-                            'Copied'
-                        );
+                /*
+                 * Copy first.
+                 */
 
-                    })
+                if (
+                    navigator.clipboard &&
+                    navigator.clipboard.writeText
+                ) {
 
-                    .catch(() => {
+                    navigator.clipboard
+                        .writeText(domain)
 
-                        showNotification(
-                            'Copy failed'
-                        );
+                        .then(function () {
 
-                    });
+                            /*
+                             * Normal button
+                             * removes the item.
+                             */
+
+                            removeSpecificDomain(
+                                event.target.parentNode,
+                                'Copied'
+                            );
+
+                        })
+
+                        .catch(function () {
+
+                            /*
+                             * Try fallback,
+                             * then remove.
+                             */
+
+                            copyFallback(domain);
+
+                            removeSpecificDomain(
+                                event.target.parentNode,
+                                'Copied'
+                            );
+
+                        });
+
+                } else {
+
+                    copyFallback(domain);
+
+                    removeSpecificDomain(
+                        event.target.parentNode,
+                        'Copied'
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       REMOVE SPECIFIC DOMAIN
+    ===================================================== */
+
+    function removeSpecificDomain(
+        li,
+        reason
+    ) {
+
+        if (!li) {
+            return;
+        }
+
+
+        const domain =
+            li.querySelector(
+                '.domain-text'
+            ).textContent.trim();
+
+
+        history.push(domain);
+
+        saveHistory();
+
+
+        li.remove();
+
+        saveDomains();
+
+
+        showNotification(
+            reason + ': ' + domain
+        );
+
+    }
+
+
+    /* =====================================================
+       LINK BUTTON
+       
+       LEFT CLICK:
+       OPEN + REMOVE
+       
+       MIDDLE CLICK:
+       OPEN + KEEP
+    ===================================================== */
+
+    domainList.addEventListener(
+        'mousedown',
+        function (event) {
+
+            if (
+                !event.target.classList.contains(
+                    'link-icon'
+                )
+            ) {
+                return;
+            }
+
+
+            const li =
+                event.target.parentNode;
+
+
+            const domain =
+                li.querySelector(
+                    '.domain-text'
+                ).textContent.trim();
+
+
+            const url =
+                'https://securitytrails.com/list/ip/' +
+                encodeURIComponent(domain);
+
+
+            /*
+             * Middle mouse button.
+             */
+
+            if (event.button === 1) {
+
+                window.open(
+                    url,
+                    TAB_NAME
+                );
+
+
+                showNotification(
+                    'Opened (kept): ' +
+                    domain
+                );
+
+
+                return;
 
             }
 
 
-            /* ---------------------------------------------
-               LINK BUTTON
-            --------------------------------------------- */
+            /*
+             * Left mouse button.
+             */
 
-            if (
-                event.target.classList.contains(
-                    'link-icon'
-                )
-            ) {
+            if (event.button === 0) {
 
-                const url =
-                    'https://securitytrails.com/list/ip/' +
-                    encodeURIComponent(domain);
+                window.open(
+                    url,
+                    TAB_NAME
+                );
 
 
-                /* -----------------------------------------
-                   MIDDLE CLICK
-                   OPEN BUT KEEP DOMAIN
-                ----------------------------------------- */
-
-                if (event.button === 1) {
-
-                    window.open(
-                        url,
-                        TAB_NAME
-                    );
-
-
-                    showNotification(
-                        `Opened (kept): ${domain}`
-                    );
-
-
-                    return;
-
-                }
-
-
-                /* -----------------------------------------
-                   LEFT CLICK
-                   OPEN + REMOVE
-                ----------------------------------------- */
-
-                if (event.button === 0) {
-
-                    window.open(
-                        url,
-                        TAB_NAME
-                    );
-
-
-                    removeFirstDomain(
-                        'Opened'
-                    );
-
-                }
+                removeSpecificDomain(
+                    li,
+                    'Opened'
+                );
 
             }
 
