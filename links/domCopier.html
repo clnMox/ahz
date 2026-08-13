@@ -1,53 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Domain Copier</title>
 
+
 <style>
 
+/* =====================================================
+   PAGE
+===================================================== */
+
 body {
+
     font-family: Arial, sans-serif;
+
     padding: 20px;
+
     color: #ffffff;
+
     background-color: rgb(5, 0, 31);
+
 }
+
+
+/* =====================================================
+   DOMAIN LIST
+===================================================== */
 
 .domain-list {
+
     list-style: none;
+
     padding: 0;
+
 }
+
 
 .domain-list li {
+
     display: flex;
+
     align-items: center;
+
     margin: 5px 0;
+
     padding: 10px;
+
     border: 1px solid #ccc;
+
 }
+
 
 .domain-list li:hover {
+
     font-weight: bold;
+
     color: #00ffff;
+
     background-color: #595a00;
+
 }
 
+
+/* =====================================================
+   DOMAIN TEXT
+===================================================== */
+
 .domain-text {
+
     flex: 1;
 
     cursor: pointer;
 
     user-select: none;
+
     -webkit-user-select: none;
+
     -webkit-touch-callout: none;
 
     touch-action: manipulation;
+
 }
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
 
 .copy-icon,
 .link-icon {
+
     cursor: pointer;
 
     padding: 5px 10px;
@@ -59,11 +108,20 @@ body {
     border-radius: 3px;
 
     user-select: none;
+
     -webkit-user-select: none;
+
     -webkit-touch-callout: none;
+
 }
 
+
+/* =====================================================
+   NOTIFICATION
+===================================================== */
+
 .notification {
+
     position: fixed;
 
     top: 20px;
@@ -89,13 +147,23 @@ body {
     max-width: 90%;
 
     text-align: center;
+
 }
+
 
 .notification.show {
+
     display: block;
+
 }
 
+
+/* =====================================================
+   CONTROLS
+===================================================== */
+
 .controls {
+
     margin: 10px 0;
 
     display: flex;
@@ -105,32 +173,42 @@ body {
     align-items: center;
 
     flex-wrap: wrap;
+
 }
 
+
 button {
+
     padding: 6px 12px;
 
     cursor: pointer;
 
     font-weight: bold;
+
 }
 
+
 .counter {
+
     font-weight: bold;
 
     color: #00ffcc;
+
 }
 
 </style>
+
 </head>
 
 
 <body>
 
+
 <h1>Copy and Remove Domain</h1>
 
 
 <div class="controls">
+
 
     <input
         type="file"
@@ -138,28 +216,36 @@ button {
         accept=".txt"
     >
 
+
     <button id="undoBtn">
+
         ↩ Undo Last
+
     </button>
 
+
     <span class="counter">
+
         Remaining:
+
         <span id="count">0</span>
+
     </span>
+
 
 </div>
 
 
 <ul
     id="domainList"
-    class="domain-list"
-></ul>
+    class="domain-list">
+</ul>
 
 
 <div
     id="notification"
-    class="notification"
-></div>
+    class="notification">
+</div>
 
 
 <script>
@@ -168,25 +254,34 @@ document.addEventListener(
     'DOMContentLoaded',
     function () {
 
+
+        /* =================================================
+           ELEMENTS
+        ================================================= */
+
         const domainList =
             document.getElementById(
                 'domainList'
             );
+
 
         const fileInput =
             document.getElementById(
                 'fileInput'
             );
 
+
         const undoBtn =
             document.getElementById(
                 'undoBtn'
             );
 
+
         const countEl =
             document.getElementById(
                 'count'
             );
+
 
         const notification =
             document.getElementById(
@@ -194,13 +289,27 @@ document.addEventListener(
             );
 
 
+        /* =================================================
+           SETTINGS
+        ================================================= */
+
         const TAB_NAME =
             'securitytrails_tab';
 
 
+        /*
+         * Long press duration.
+         *
+         * 1000 milliseconds = 1 second
+         */
+
         const LONG_PRESS =
             1000;
 
+
+        /* =================================================
+           VARIABLES
+        ================================================= */
 
         let history =
             JSON.parse(
@@ -210,11 +319,9 @@ document.addEventListener(
             );
 
 
-        let timer = null;
+        let longPressTimer = null;
 
-        let currentTarget = null;
-
-        let longPress = false;
+        let longPressCompleted = false;
 
 
         /* =================================================
@@ -239,6 +346,7 @@ document.addEventListener(
 
             notification.textContent =
                 message;
+
 
             notification.classList.add(
                 'show'
@@ -291,7 +399,7 @@ document.addEventListener(
 
 
         /* =================================================
-           HISTORY
+           SAVE HISTORY
         ================================================= */
 
         function saveHistory() {
@@ -310,7 +418,7 @@ document.addEventListener(
 
         function addDomain(
             domain,
-            top = false
+            toTop = false
         ) {
 
             const li =
@@ -319,56 +427,84 @@ document.addEventListener(
                 );
 
 
-            const text =
+            /* DOMAIN */
+
+            const domainText =
                 document.createElement(
                     'span'
                 );
 
-            text.className =
+
+            domainText.className =
                 'domain-text';
 
-            text.textContent =
+
+            domainText.textContent =
                 domain;
 
 
-            const link =
+            /* LINK */
+
+            const linkIcon =
                 document.createElement(
                     'span'
                 );
 
-            link.className =
+
+            linkIcon.className =
                 'link-icon';
 
-            link.textContent =
+
+            linkIcon.textContent =
                 '🔗';
 
 
-            const copy =
+            /* COPY */
+
+            const copyIcon =
                 document.createElement(
                     'span'
                 );
 
-            copy.className =
+
+            copyIcon.className =
                 'copy-icon';
 
-            copy.textContent =
+
+            copyIcon.textContent =
                 '📋';
 
 
-            li.appendChild(text);
+            /* BUILD ROW */
 
-            li.appendChild(link);
+            li.appendChild(
+                domainText
+            );
 
-            li.appendChild(copy);
+
+            li.appendChild(
+                linkIcon
+            );
 
 
-            if (top) {
+            li.appendChild(
+                copyIcon
+            );
 
-                domainList.prepend(li);
+
+            /* INSERT */
+
+            if (toTop) {
+
+                domainList.prepend(
+                    li
+                );
 
             } else {
 
-                domainList.appendChild(li);
+                domainList.appendChild(
+                    li
+                );
 
             }
 
@@ -398,12 +534,24 @@ document.addEventListener(
                 ).textContent.trim();
 
 
-            history.push(domain);
+            /*
+             * Save for Undo.
+             */
+
+            history.push(
+                domain
+            );
+
 
             saveHistory();
 
 
+            /*
+             * Remove.
+             */
+
             li.remove();
+
 
             saveDomains();
 
@@ -416,23 +564,23 @@ document.addEventListener(
 
 
         /* =================================================
-           COPY
-           
-           HTTPS/GITHUB PAGES FIRST
+           MODERN COPY
         ================================================= */
 
         async function copyText(
             text
         ) {
 
+
             /*
-             * Modern clipboard.
+             * Try modern Clipboard API.
              */
 
             try {
 
                 if (
-                    navigator.clipboard
+                    navigator.clipboard &&
+                    window.isSecureContext
                 ) {
 
                     await navigator.clipboard.writeText(
@@ -449,7 +597,9 @@ document.addEventListener(
 
                 }
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.log(
                     'Clipboard API failed:',
@@ -460,7 +610,7 @@ document.addEventListener(
 
 
             /*
-             * Fallback.
+             * Try fallback.
              */
 
             return fallbackCopy(
@@ -488,14 +638,31 @@ document.addEventListener(
                 text;
 
 
+            textarea.setAttribute(
+                'readonly',
+                ''
+            );
+
+
             textarea.style.position =
                 'fixed';
+
 
             textarea.style.left =
                 '-9999px';
 
+
             textarea.style.top =
                 '0';
+
+
+            textarea.style.width =
+                '1px';
+
+
+            textarea.style.height =
+                '1px';
+
 
             textarea.style.opacity =
                 '0';
@@ -508,7 +675,9 @@ document.addEventListener(
 
             textarea.focus();
 
+
             textarea.select();
+
 
             textarea.setSelectionRange(
                 0,
@@ -516,19 +685,23 @@ document.addEventListener(
             );
 
 
-            let result = false;
+            let success =
+                false;
 
 
             try {
 
-                result =
+                success =
                     document.execCommand(
                         'copy'
                     );
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.log(
+                    'Fallback copy failed:',
                     error
                 );
 
@@ -538,11 +711,12 @@ document.addEventListener(
             textarea.remove();
 
 
-            if (result) {
+            if (success) {
 
                 showNotification(
                     'Copied: ' + text
                 );
+
 
                 return true;
 
@@ -560,7 +734,7 @@ document.addEventListener(
 
 
         /* =================================================
-           LOAD
+           LOAD SAVED DOMAINS
         ================================================= */
 
         function loadDomains() {
@@ -597,7 +771,7 @@ document.addEventListener(
 
 
         /* =================================================
-           FILE
+           FILE UPLOAD
         ================================================= */
 
         fileInput.addEventListener(
@@ -620,16 +794,20 @@ document.addEventListener(
                 reader.onload =
                     function (event) {
 
+
                         const domains =
                             event.target.result
-                                .split(/\r?\n/)
-                                .map(
-                                    function (d) {
 
-                                        return d.trim();
+                                .split(/\r?\n/)
+
+                                .map(
+                                    function (domain) {
+
+                                        return domain.trim();
 
                                     }
                                 )
+
                                 .filter(Boolean);
 
 
@@ -669,6 +847,7 @@ document.addEventListener(
             'click',
             function () {
 
+
                 if (!history.length) {
 
                     showNotification(
@@ -676,6 +855,7 @@ document.addEventListener(
                     );
 
                     return;
+
                 }
 
 
@@ -705,11 +885,18 @@ document.addEventListener(
 
         /* =================================================
            START LONG PRESS
+           
+           ANY DOMAIN CAN BE LONG PRESSED.
+           
+           LONG PRESS = COPY ONLY.
+           
+           NEVER REMOVE.
         ================================================= */
 
         function startLongPress(
             element
         ) {
+
 
             if (
                 !element.classList.contains(
@@ -722,14 +909,14 @@ document.addEventListener(
             }
 
 
-            clearTimer();
+            /*
+             * Cancel previous timer.
+             */
+
+            clearLongPress();
 
 
-            currentTarget =
-                element;
-
-
-            longPress =
+            longPressCompleted =
                 false;
 
 
@@ -737,25 +924,30 @@ document.addEventListener(
                 element.textContent.trim();
 
 
-            timer =
-                setTimeout(
-                    function () {
+            /*
+             * Start 1-second timer.
+             */
 
-                        longPress =
+            longPressTimer =
+                setTimeout(
+                    async function () {
+
+
+                        longPressCompleted =
                             true;
 
 
-                        timer =
+                        longPressTimer =
                             null;
 
 
                         /*
                          * COPY ONLY.
                          *
-                         * DOES NOT REMOVE.
+                         * NOTHING IS REMOVED.
                          */
 
-                        copyText(
+                        await copyText(
                             domain
                         );
 
@@ -768,20 +960,22 @@ document.addEventListener(
 
 
         /* =================================================
-           CLEAR TIMER
+           CLEAR LONG PRESS
         ================================================= */
 
-        function clearTimer() {
+        function clearLongPress() {
+
 
             if (
-                timer !== null
+                longPressTimer !== null
             ) {
 
                 clearTimeout(
-                    timer
+                    longPressTimer
                 );
 
-                timer =
+
+                longPressTimer =
                     null;
 
             }
@@ -796,6 +990,7 @@ document.addEventListener(
         domainList.addEventListener(
             'touchstart',
             function (event) {
+
 
                 const element =
                     event.target;
@@ -828,10 +1023,15 @@ document.addEventListener(
             'touchend',
             function () {
 
-                clearTimer();
 
-                currentTarget =
-                    null;
+                if (
+                    !longPressCompleted
+                ) {
+
+                    clearLongPress();
+
+                }
+
 
             }
         );
@@ -845,10 +1045,7 @@ document.addEventListener(
             'touchcancel',
             function () {
 
-                clearTimer();
-
-                currentTarget =
-                    null;
+                clearLongPress();
 
             }
         );
@@ -861,6 +1058,7 @@ document.addEventListener(
         domainList.addEventListener(
             'mousedown',
             function (event) {
+
 
                 if (
                     event.button !== 0
@@ -899,10 +1097,15 @@ document.addEventListener(
             'mouseup',
             function () {
 
-                clearTimer();
 
-                currentTarget =
-                    null;
+                if (
+                    !longPressCompleted
+                ) {
+
+                    clearLongPress();
+
+                }
+
 
             }
         );
@@ -911,12 +1114,13 @@ document.addEventListener(
         /* =================================================
            COPY BUTTON
            
-           COPY + REMOVE
+           ONLY FIRST ITEM CAN REMOVE.
         ================================================= */
 
         domainList.addEventListener(
             'click',
             function (event) {
+
 
                 if (
                     !event.target.classList.contains(
@@ -930,7 +1134,32 @@ document.addEventListener(
 
 
                 const li =
-                    event.target.parentNode;
+                    event.target.closest(
+                        'li'
+                    );
+
+
+                const first =
+                    domainList.querySelector(
+                        'li'
+                    );
+
+
+                /*
+                 * SAFETY:
+                 *
+                 * If this is NOT the first item,
+                 * DO NOTHING.
+                 */
+
+                if (
+                    !li ||
+                    li !== first
+                ) {
+
+                    return;
+
+                }
 
 
                 const domain =
@@ -939,10 +1168,15 @@ document.addEventListener(
                     ).textContent.trim();
 
 
+                /*
+                 * Copy then remove.
+                 */
+
                 copyText(
                     domain
                 ).then(
                     function (success) {
+
 
                         if (success) {
 
@@ -961,18 +1195,13 @@ document.addEventListener(
 
 
         /* =================================================
-           LINK
-           
-           LEFT:
-           OPEN + REMOVE
-           
-           MIDDLE:
-           OPEN + KEEP
+           LINK BUTTON
         ================================================= */
 
         domainList.addEventListener(
             'mousedown',
             function (event) {
+
 
                 if (
                     !event.target.classList.contains(
@@ -986,7 +1215,14 @@ document.addEventListener(
 
 
                 const li =
-                    event.target.parentNode;
+                    event.target.closest(
+                        'li'
+                    );
+
+
+                if (!li) {
+                    return;
+                }
 
 
                 const domain =
@@ -1001,6 +1237,14 @@ document.addEventListener(
                         domain
                     );
 
+
+                /* =========================================
+                   MIDDLE CLICK
+                   
+                   ANY ITEM CAN OPEN.
+                   
+                   NOTHING IS REMOVED.
+                ========================================= */
 
                 if (
                     event.button === 1
@@ -1023,9 +1267,37 @@ document.addEventListener(
                 }
 
 
+                /* =========================================
+                   LEFT CLICK
+                   
+                   ONLY FIRST ITEM CAN REMOVE.
+                ========================================= */
+
                 if (
                     event.button === 0
                 ) {
+
+
+                    const first =
+                        domainList.querySelector(
+                            'li'
+                        );
+
+
+                    /*
+                     * SAFETY CHECK.
+                     *
+                     * Not first = do nothing.
+                     */
+
+                    if (
+                        li !== first
+                    ) {
+
+                        return;
+
+                    }
+
 
                     window.open(
                         url,
@@ -1050,4 +1322,5 @@ document.addEventListener(
 </script>
 
 </body>
-</html>
+
+</html> 
