@@ -43,10 +43,6 @@ body {
     -webkit-user-select: none;
     -webkit-touch-callout: none;
 
-    /*
-     * Prevent the browser from handling
-     * the touch as text selection.
-     */
     touch-action: manipulation;
 }
 
@@ -168,896 +164,232 @@ button {
 
 <script>
 
-document.addEventListener('DOMContentLoaded', function () {
-
-    const domainList =
-        document.getElementById('domainList');
-
-    const fileInput =
-        document.getElementById('fileInput');
-
-    const undoBtn =
-        document.getElementById('undoBtn');
-
-    const countEl =
-        document.getElementById('count');
-
-    const notification =
-        document.getElementById('notification');
-
-
-    const TAB_NAME =
-        'securitytrails_tab';
-
-
-    const LONG_PRESS_TIME =
-        3000;
-
-
-    let history =
-        JSON.parse(
-            localStorage.getItem('history') || '[]'
-        );
-
-
-    let longPressTimer = null;
-
-    let longPressTarget = null;
-
-    let longPressDone = false;
-
-
-    /* =====================================================
-       COUNT
-    ===================================================== */
-
-    function updateCount() {
-
-        countEl.textContent =
-            domainList.children.length;
-
-    }
-
-
-    /* =====================================================
-       NOTIFICATION
-    ===================================================== */
-
-    function showNotification(message) {
-
-        notification.textContent =
-            message;
-
-        notification.classList.add('show');
-
-
-        setTimeout(function () {
-
-            notification.classList.remove('show');
-
-        }, 1500);
-
-    }
-
-
-    /* =====================================================
-       SAVE DOMAINS
-    ===================================================== */
-
-    function saveDomains() {
-
-        const domains =
-            Array.from(
-                domainList.querySelectorAll(
-                    '.domain-text'
-                )
-            ).map(function (element) {
-
-                return element.textContent.trim();
-
-            });
-
-
-        localStorage.setItem(
-            'domains',
-            JSON.stringify(domains)
-        );
-
-
-        updateCount();
-
-    }
-
-
-    /* =====================================================
-       SAVE HISTORY
-    ===================================================== */
-
-    function saveHistory() {
-
-        localStorage.setItem(
-            'history',
-            JSON.stringify(history)
-        );
-
-    }
-
-
-    /* =====================================================
-       ADD DOMAIN
-    ===================================================== */
-
-    function addDomain(
-        domain,
-        toTop
-    ) {
-
-        const li =
-            document.createElement('li');
-
-
-        const text =
-            document.createElement('span');
-
-        text.className =
-            'domain-text';
-
-        text.textContent =
-            domain;
-
-
-        const link =
-            document.createElement('span');
-
-        link.className =
-            'link-icon';
-
-        link.textContent =
-            '🔗';
-
-
-        const copy =
-            document.createElement('span');
-
-        copy.className =
-            'copy-icon';
-
-        copy.textContent =
-            '📋';
-
-
-        li.appendChild(text);
-
-        li.appendChild(link);
-
-        li.appendChild(copy);
-
-
-        if (toTop) {
-
-            domainList.prepend(li);
-
-        } else {
-
-            domainList.appendChild(li);
-
-        }
-
-
-        updateCount();
-
-    }
-
-
-    /* =====================================================
-       REMOVE FIRST DOMAIN
-    ===================================================== */
-
-    function removeFirstDomain(reason) {
-
-        const first =
-            domainList.querySelector('li');
-
-
-        if (!first) {
-            return;
-        }
-
-
-        const domain =
-            first.querySelector(
-                '.domain-text'
-            ).textContent.trim();
-
-
-        history.push(domain);
-
-        saveHistory();
-
-
-        first.remove();
-
-        saveDomains();
-
-
-        showNotification(
-            reason + ': ' + domain
-        );
-
-    }
-
-
-    /* =====================================================
-       COPY FUNCTION
-       
-       Uses navigator.clipboard first.
-       
-       If that fails, uses a textarea
-       fallback for Android/local pages.
-    ===================================================== */
-
-    function copyText(text) {
-
-        /*
-         * First attempt:
-         * modern clipboard API
-         */
-
-        if (
-            navigator.clipboard &&
-            navigator.clipboard.writeText
-        ) {
-
-            navigator.clipboard
-                .writeText(text)
-
-                .then(function () {
-
-                    showNotification(
-                        'Copied: ' + text
-                    );
-
-                })
-
-                .catch(function () {
-
-                    /*
-                     * Clipboard API failed.
-                     * Try fallback.
-                     */
-
-                    copyFallback(text);
-
-                });
-
-            return;
-        }
-
-
-        /*
-         * Clipboard API unavailable.
-         */
-
-        copyFallback(text);
-
-    }
-
-
-    /* =====================================================
-       CLIPBOARD FALLBACK
-    ===================================================== */
-
-    function copyFallback(text) {
-
-        const textarea =
-            document.createElement('textarea');
-
-
-        textarea.value =
-            text;
-
-
-        textarea.style.position =
-            'fixed';
-
-        textarea.style.left =
-            '-9999px';
-
-        textarea.style.top =
-            '0';
-
-        textarea.style.opacity =
-            '0';
-
-
-        document.body.appendChild(
-            textarea
-        );
-
-
-        textarea.focus();
-
-        textarea.select();
-
-
-        let success = false;
-
-
-        try {
-
-            success =
-                document.execCommand(
-                    'copy'
-                );
-
-        } catch (error) {
-
-            success = false;
-
-        }
-
-
-        textarea.remove();
-
-
-        if (success) {
-
-            showNotification(
-                'Copied: ' + text
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        const domainList =
+            document.getElementById(
+                'domainList'
             );
 
-        } else {
-
-            showNotification(
-                'Copy failed'
+        const fileInput =
+            document.getElementById(
+                'fileInput'
             );
 
-        }
+        const undoBtn =
+            document.getElementById(
+                'undoBtn'
+            );
 
-    }
+        const countEl =
+            document.getElementById(
+                'count'
+            );
+
+        const notification =
+            document.getElementById(
+                'notification'
+            );
 
 
-    /* =====================================================
-       LOAD DOMAINS
-    ===================================================== */
+        const TAB_NAME =
+            'securitytrails_tab';
 
-    function loadDomains() {
 
-        const domains =
+        const LONG_PRESS =
+            3000;
+
+
+        let history =
             JSON.parse(
                 localStorage.getItem(
-                    'domains'
+                    'history'
                 ) || '[]'
             );
 
 
-        domainList.innerHTML = '';
+        let timer = null;
+
+        let currentTarget = null;
+
+        let longPress = false;
 
 
-        domains.forEach(function (domain) {
+        /* =================================================
+           COUNT
+        ================================================= */
 
-            addDomain(domain);
+        function updateCount() {
 
-        });
-
-
-        updateCount();
-
-    }
-
-
-    loadDomains();
-
-
-    /* =====================================================
-       FILE UPLOAD
-    ===================================================== */
-
-    fileInput.addEventListener(
-        'change',
-        function (event) {
-
-            const file =
-                event.target.files[0];
-
-
-            if (!file) {
-                return;
-            }
-
-
-            const reader =
-                new FileReader();
-
-
-            reader.onload =
-                function (event) {
-
-                    const domains =
-                        event.target.result
-                            .split(/\r?\n/)
-                            .map(function (domain) {
-
-                                return domain.trim();
-
-                            })
-                            .filter(Boolean);
-
-
-                    domainList.innerHTML =
-                        '';
-
-
-                    domains.forEach(
-                        function (domain) {
-
-                            addDomain(domain);
-
-                        }
-                    );
-
-
-                    saveDomains();
-
-                };
-
-
-            reader.readAsText(file);
+            countEl.textContent =
+                domainList.children.length;
 
         }
-    );
 
 
-    /* =====================================================
-       UNDO
-    ===================================================== */
+        /* =================================================
+           NOTIFICATION
+        ================================================= */
 
-    undoBtn.addEventListener(
-        'click',
-        function () {
-
-            if (!history.length) {
-
-                showNotification(
-                    'Nothing to undo'
-                );
-
-                return;
-            }
-
-
-            const domain =
-                history.pop();
-
-
-            saveHistory();
-
-
-            addDomain(
-                domain,
-                true
-            );
-
-
-            saveDomains();
-
-
-            showNotification(
-                'Restored: ' + domain
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       START LONG PRESS
-       
-       Works on ANY domain text.
-    ===================================================== */
-
-    function startLongPress(element) {
-
-        /*
-         * Make sure we touched the IP/domain.
-         */
-
-        if (
-            !element.classList.contains(
-                'domain-text'
-            )
+        function showNotification(
+            message
         ) {
-            return;
-        }
+
+            notification.textContent =
+                message;
+
+            notification.classList.add(
+                'show'
+            );
 
 
-        /*
-         * Clear previous timer.
-         */
-
-        clearLongPress();
-
-
-        longPressTarget =
-            element;
-
-
-        longPressDone =
-            false;
-
-
-        const domain =
-            element.textContent.trim();
-
-
-        /*
-         * Start 3-second timer.
-         */
-
-        longPressTimer =
             setTimeout(
                 function () {
 
-                    /*
-                     * Long press completed.
-                     */
-
-                    longPressDone =
-                        true;
-
-
-                    longPressTimer =
-                        null;
-
-
-                    /*
-                     * COPY ONLY.
-                     *
-                     * DO NOT REMOVE.
-                     */
-
-                    copyText(domain);
-
+                    notification.classList.remove(
+                        'show'
+                    );
 
                 },
-                LONG_PRESS_TIME
+                1500
             );
 
-    }
+        }
 
 
-    /* =====================================================
-       CLEAR LONG PRESS
-    ===================================================== */
+        /* =================================================
+           SAVE DOMAINS
+        ================================================= */
 
-    function clearLongPress() {
+        function saveDomains() {
 
-        if (
-            longPressTimer !== null
+            const domains =
+                Array.from(
+                    domainList.querySelectorAll(
+                        '.domain-text'
+                    )
+                ).map(
+                    function (element) {
+
+                        return element.textContent.trim();
+
+                    }
+                );
+
+
+            localStorage.setItem(
+                'domains',
+                JSON.stringify(domains)
+            );
+
+
+            updateCount();
+
+        }
+
+
+        /* =================================================
+           HISTORY
+        ================================================= */
+
+        function saveHistory() {
+
+            localStorage.setItem(
+                'history',
+                JSON.stringify(history)
+            );
+
+        }
+
+
+        /* =================================================
+           ADD DOMAIN
+        ================================================= */
+
+        function addDomain(
+            domain,
+            top = false
         ) {
 
-            clearTimeout(
-                longPressTimer
-            );
-
-            longPressTimer =
-                null;
-
-        }
+            const li =
+                document.createElement(
+                    'li'
+                );
 
 
-        longPressTarget =
-            null;
+            const text =
+                document.createElement(
+                    'span'
+                );
 
-    }
+            text.className =
+                'domain-text';
 
-
-    /* =====================================================
-       TOUCH START
-       
-       This is the important part for Android.
-    ===================================================== */
-
-    domainList.addEventListener(
-        'touchstart',
-        function (event) {
-
-            const element =
-                event.target;
+            text.textContent =
+                domain;
 
 
-            if (
-                !element.classList.contains(
-                    'domain-text'
-                )
-            ) {
-                return;
-            }
+            const link =
+                document.createElement(
+                    'span'
+                );
+
+            link.className =
+                'link-icon';
+
+            link.textContent =
+                '🔗';
 
 
-            startLongPress(element);
+            const copy =
+                document.createElement(
+                    'span'
+                );
+
+            copy.className =
+                'copy-icon';
+
+            copy.textContent =
+                '📋';
 
 
-        },
-        {
-            passive: true
-        }
-    );
+            li.appendChild(text);
+
+            li.appendChild(link);
+
+            li.appendChild(copy);
 
 
-    /* =====================================================
-       TOUCH END
-    ===================================================== */
+            if (top) {
 
-    domainList.addEventListener(
-        'touchend',
-        function () {
-
-            /*
-             * If 3 seconds were not reached,
-             * cancel the timer.
-             */
-
-            if (!longPressDone) {
-
-                clearLongPress();
+                domainList.prepend(li);
 
             } else {
 
-                longPressTimer =
-                    null;
+                domainList.appendChild(li);
 
             }
 
-        }
-    );
 
-
-    /* =====================================================
-       TOUCH CANCEL
-    ===================================================== */
-
-    domainList.addEventListener(
-        'touchcancel',
-        function () {
-
-            clearLongPress();
+            updateCount();
 
         }
-    );
 
 
-    /* =====================================================
-       MOUSE DOWN
-       
-       Also supports computer mouse.
-    ===================================================== */
+        /* =================================================
+           REMOVE DOMAIN
+        ================================================= */
 
-    domainList.addEventListener(
-        'mousedown',
-        function (event) {
+        function removeDomain(
+            li,
+            reason
+        ) {
 
-            if (event.button !== 0) {
+            if (!li) {
                 return;
             }
-
-
-            const element =
-                event.target;
-
-
-            if (
-                !element.classList.contains(
-                    'domain-text'
-                )
-            ) {
-                return;
-            }
-
-
-            startLongPress(element);
-
-        }
-    );
-
-
-    /* =====================================================
-       MOUSE UP
-    ===================================================== */
-
-    domainList.addEventListener(
-        'mouseup',
-        function () {
-
-            if (!longPressDone) {
-
-                clearLongPress();
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       MOUSE LEAVE
-    ===================================================== */
-
-    domainList.addEventListener(
-        'mouseleave',
-        function () {
-
-            if (!longPressDone) {
-
-                clearLongPress();
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       COPY BUTTON
-       
-       Normal click:
-       COPY + REMOVE
-    ===================================================== */
-
-    domainList.addEventListener(
-        'click',
-        function (event) {
-
-            const first =
-                domainList.querySelector('li');
-
-
-            if (!first) {
-                return;
-            }
-
-
-            /*
-             * COPY BUTTON
-             */
-
-            if (
-                event.target.classList.contains(
-                    'copy-icon'
-                )
-            ) {
-
-                const domain =
-                    event.target
-                        .parentNode
-                        .querySelector(
-                            '.domain-text'
-                        )
-                        .textContent
-                        .trim();
-
-
-                /*
-                 * Copy first.
-                 */
-
-                if (
-                    navigator.clipboard &&
-                    navigator.clipboard.writeText
-                ) {
-
-                    navigator.clipboard
-                        .writeText(domain)
-
-                        .then(function () {
-
-                            /*
-                             * Normal button
-                             * removes the item.
-                             */
-
-                            removeSpecificDomain(
-                                event.target.parentNode,
-                                'Copied'
-                            );
-
-                        })
-
-                        .catch(function () {
-
-                            /*
-                             * Try fallback,
-                             * then remove.
-                             */
-
-                            copyFallback(domain);
-
-                            removeSpecificDomain(
-                                event.target.parentNode,
-                                'Copied'
-                            );
-
-                        });
-
-                } else {
-
-                    copyFallback(domain);
-
-                    removeSpecificDomain(
-                        event.target.parentNode,
-                        'Copied'
-                    );
-
-                }
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       REMOVE SPECIFIC DOMAIN
-    ===================================================== */
-
-    function removeSpecificDomain(
-        li,
-        reason
-    ) {
-
-        if (!li) {
-            return;
-        }
-
-
-        const domain =
-            li.querySelector(
-                '.domain-text'
-            ).textContent.trim();
-
-
-        history.push(domain);
-
-        saveHistory();
-
-
-        li.remove();
-
-        saveDomains();
-
-
-        showNotification(
-            reason + ': ' + domain
-        );
-
-    }
-
-
-    /* =====================================================
-       LINK BUTTON
-       
-       LEFT CLICK:
-       OPEN + REMOVE
-       
-       MIDDLE CLICK:
-       OPEN + KEEP
-    ===================================================== */
-
-    domainList.addEventListener(
-        'mousedown',
-        function (event) {
-
-            if (
-                !event.target.classList.contains(
-                    'link-icon'
-                )
-            ) {
-                return;
-            }
-
-
-            const li =
-                event.target.parentNode;
 
 
             const domain =
@@ -1066,58 +398,654 @@ document.addEventListener('DOMContentLoaded', function () {
                 ).textContent.trim();
 
 
-            const url =
-                'https://securitytrails.com/list/ip/' +
-                encodeURIComponent(domain);
+            history.push(domain);
+
+            saveHistory();
+
+
+            li.remove();
+
+            saveDomains();
+
+
+            showNotification(
+                reason + ': ' + domain
+            );
+
+        }
+
+
+        /* =================================================
+           COPY
+           
+           HTTPS/GITHUB PAGES FIRST
+        ================================================= */
+
+        async function copyText(
+            text
+        ) {
+
+            /*
+             * Modern clipboard.
+             */
+
+            try {
+
+                if (
+                    navigator.clipboard
+                ) {
+
+                    await navigator.clipboard.writeText(
+                        text
+                    );
+
+
+                    showNotification(
+                        'Copied: ' + text
+                    );
+
+
+                    return true;
+
+                }
+
+            } catch (error) {
+
+                console.log(
+                    'Clipboard API failed:',
+                    error
+                );
+
+            }
 
 
             /*
-             * Middle mouse button.
+             * Fallback.
              */
 
-            if (event.button === 1) {
+            return fallbackCopy(
+                text
+            );
 
-                window.open(
-                    url,
-                    TAB_NAME
+        }
+
+
+        /* =================================================
+           FALLBACK COPY
+        ================================================= */
+
+        function fallbackCopy(
+            text
+        ) {
+
+            const textarea =
+                document.createElement(
+                    'textarea'
                 );
+
+
+            textarea.value =
+                text;
+
+
+            textarea.style.position =
+                'fixed';
+
+            textarea.style.left =
+                '-9999px';
+
+            textarea.style.top =
+                '0';
+
+            textarea.style.opacity =
+                '0';
+
+
+            document.body.appendChild(
+                textarea
+            );
+
+
+            textarea.focus();
+
+            textarea.select();
+
+            textarea.setSelectionRange(
+                0,
+                textarea.value.length
+            );
+
+
+            let result = false;
+
+
+            try {
+
+                result =
+                    document.execCommand(
+                        'copy'
+                    );
+
+            } catch (error) {
+
+                console.log(
+                    error
+                );
+
+            }
+
+
+            textarea.remove();
+
+
+            if (result) {
+
+                showNotification(
+                    'Copied: ' + text
+                );
+
+                return true;
+
+            }
+
+
+            showNotification(
+                'Copy failed'
+            );
+
+
+            return false;
+
+        }
+
+
+        /* =================================================
+           LOAD
+        ================================================= */
+
+        function loadDomains() {
+
+            const domains =
+                JSON.parse(
+                    localStorage.getItem(
+                        'domains'
+                    ) || '[]'
+                );
+
+
+            domainList.innerHTML =
+                '';
+
+
+            domains.forEach(
+                function (domain) {
+
+                    addDomain(
+                        domain
+                    );
+
+                }
+            );
+
+
+            updateCount();
+
+        }
+
+
+        loadDomains();
+
+
+        /* =================================================
+           FILE
+        ================================================= */
+
+        fileInput.addEventListener(
+            'change',
+            function (event) {
+
+                const file =
+                    event.target.files[0];
+
+
+                if (!file) {
+                    return;
+                }
+
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload =
+                    function (event) {
+
+                        const domains =
+                            event.target.result
+                                .split(/\r?\n/)
+                                .map(
+                                    function (d) {
+
+                                        return d.trim();
+
+                                    }
+                                )
+                                .filter(Boolean);
+
+
+                        domainList.innerHTML =
+                            '';
+
+
+                        domains.forEach(
+                            function (domain) {
+
+                                addDomain(
+                                    domain
+                                );
+
+                            }
+                        );
+
+
+                        saveDomains();
+
+                    };
+
+
+                reader.readAsText(
+                    file
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           UNDO
+        ================================================= */
+
+        undoBtn.addEventListener(
+            'click',
+            function () {
+
+                if (!history.length) {
+
+                    showNotification(
+                        'Nothing to undo'
+                    );
+
+                    return;
+                }
+
+
+                const domain =
+                    history.pop();
+
+
+                saveHistory();
+
+
+                addDomain(
+                    domain,
+                    true
+                );
+
+
+                saveDomains();
 
 
                 showNotification(
-                    'Opened (kept): ' +
-                    domain
+                    'Restored: ' + domain
                 );
 
+            }
+        );
+
+
+        /* =================================================
+           START LONG PRESS
+        ================================================= */
+
+        function startLongPress(
+            element
+        ) {
+
+            if (
+                !element.classList.contains(
+                    'domain-text'
+                )
+            ) {
 
                 return;
 
             }
 
 
-            /*
-             * Left mouse button.
-             */
+            clearTimer();
 
-            if (event.button === 0) {
 
-                window.open(
-                    url,
-                    TAB_NAME
+            currentTarget =
+                element;
+
+
+            longPress =
+                false;
+
+
+            const domain =
+                element.textContent.trim();
+
+
+            timer =
+                setTimeout(
+                    function () {
+
+                        longPress =
+                            true;
+
+
+                        timer =
+                            null;
+
+
+                        /*
+                         * COPY ONLY.
+                         *
+                         * DOES NOT REMOVE.
+                         */
+
+                        copyText(
+                            domain
+                        );
+
+
+                    },
+                    LONG_PRESS
                 );
 
+        }
 
-                removeSpecificDomain(
-                    li,
-                    'Opened'
+
+        /* =================================================
+           CLEAR TIMER
+        ================================================= */
+
+        function clearTimer() {
+
+            if (
+                timer !== null
+            ) {
+
+                clearTimeout(
+                    timer
                 );
+
+                timer =
+                    null;
 
             }
 
         }
-    );
 
 
-});
+        /* =================================================
+           TOUCH START
+        ================================================= */
+
+        domainList.addEventListener(
+            'touchstart',
+            function (event) {
+
+                const element =
+                    event.target;
+
+
+                if (
+                    element.classList.contains(
+                        'domain-text'
+                    )
+                ) {
+
+                    startLongPress(
+                        element
+                    );
+
+                }
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        /* =================================================
+           TOUCH END
+        ================================================= */
+
+        domainList.addEventListener(
+            'touchend',
+            function () {
+
+                clearTimer();
+
+                currentTarget =
+                    null;
+
+            }
+        );
+
+
+        /* =================================================
+           TOUCH CANCEL
+        ================================================= */
+
+        domainList.addEventListener(
+            'touchcancel',
+            function () {
+
+                clearTimer();
+
+                currentTarget =
+                    null;
+
+            }
+        );
+
+
+        /* =================================================
+           MOUSE DOWN
+        ================================================= */
+
+        domainList.addEventListener(
+            'mousedown',
+            function (event) {
+
+                if (
+                    event.button !== 0
+                ) {
+
+                    return;
+
+                }
+
+
+                const element =
+                    event.target;
+
+
+                if (
+                    element.classList.contains(
+                        'domain-text'
+                    )
+                ) {
+
+                    startLongPress(
+                        element
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           MOUSE UP
+        ================================================= */
+
+        domainList.addEventListener(
+            'mouseup',
+            function () {
+
+                clearTimer();
+
+                currentTarget =
+                    null;
+
+            }
+        );
+
+
+        /* =================================================
+           COPY BUTTON
+           
+           COPY + REMOVE
+        ================================================= */
+
+        domainList.addEventListener(
+            'click',
+            function (event) {
+
+                if (
+                    !event.target.classList.contains(
+                        'copy-icon'
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                const li =
+                    event.target.parentNode;
+
+
+                const domain =
+                    li.querySelector(
+                        '.domain-text'
+                    ).textContent.trim();
+
+
+                copyText(
+                    domain
+                ).then(
+                    function (success) {
+
+                        if (success) {
+
+                            removeDomain(
+                                li,
+                                'Copied'
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           LINK
+           
+           LEFT:
+           OPEN + REMOVE
+           
+           MIDDLE:
+           OPEN + KEEP
+        ================================================= */
+
+        domainList.addEventListener(
+            'mousedown',
+            function (event) {
+
+                if (
+                    !event.target.classList.contains(
+                        'link-icon'
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                const li =
+                    event.target.parentNode;
+
+
+                const domain =
+                    li.querySelector(
+                        '.domain-text'
+                    ).textContent.trim();
+
+
+                const url =
+                    'https://securitytrails.com/list/ip/' +
+                    encodeURIComponent(
+                        domain
+                    );
+
+
+                if (
+                    event.button === 1
+                ) {
+
+                    window.open(
+                        url,
+                        TAB_NAME
+                    );
+
+
+                    showNotification(
+                        'Opened (kept): ' +
+                        domain
+                    );
+
+
+                    return;
+
+                }
+
+
+                if (
+                    event.button === 0
+                ) {
+
+                    window.open(
+                        url,
+                        TAB_NAME
+                    );
+
+
+                    removeDomain(
+                        li,
+                        'Opened'
+                    );
+
+                }
+
+            }
+        );
+
+
+    }
+);
 
 </script>
 
